@@ -1,0 +1,45 @@
+# ==============================
+# Web Server
+# ==============================
+
+Django==1.6.2
+gunicorn==18.0
+django-toolbelt==0.0.1
+
+
+
+# ==============================
+# Database
+# ==============================
+
+dj-database-url==0.2.2
+psycopg2==2.5.2
+django-cache-url==0.8.0
+django-redis==3.5.1
+
+
+
+# ==============================
+# Static files
+# ==============================
+
+dj-static==0.0.5
+
+
+
+# ==============================
+# API
+# ==============================
+
+git+https://github.com/openplans/shareabouts-api@master#egg=shareabouts-api
+#djangorestframework==2.3.12
+
+
+
+# ==============================
+# Testing & Debugging
+# ==============================
+
+django-nose==1.2
+mock==1.0.1
+django-debug-toolbar==1.0.1
