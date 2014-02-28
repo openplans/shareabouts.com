@@ -32,7 +32,7 @@ dj-static==0.0.5
 # API
 # ==============================
 
-git+https://github.com/openplans/shareabouts-api@master#egg=shareabouts-api
+git+https://github.com/openplans/shareabouts-api.git@api-app#egg=shareabouts-api
 #djangorestframework==2.3.12
 
 
