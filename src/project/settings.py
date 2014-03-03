@@ -12,12 +12,17 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+from project.env_utils import Environment
+env = Environment(os.environ)
+
 # Load the local environment file if one is available
-from project.env_utils import getenv, loadenv
 try:
-    loadenv(os.path.join(BASE_DIR, 'local.env'))
+    envfile = open(os.path.join(BASE_DIR, 'local.env'))
 except IOError:
     pass
+else:
+    try: env.load(envfile)
+    finally: envfile.close()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -27,8 +32,8 @@ except IOError:
 # Access, security, and cryptography
 # ======================================================================
 
-SECRET_KEY = getenv('SECRET_KEY')
-ALLOWED_HOSTS = getenv('ALLOWED_HOSTS').split(',')
+SECRET_KEY = env.get('SECRET_KEY')
+ALLOWED_HOSTS = env.get('ALLOWED_HOSTS').split(',')
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -39,8 +44,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # ======================================================================
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = (getenv('DEBUG', 'False').lower() == 'true')
-TEMPLATE_DEBUG = DEBUG or (getenv('TEMPLATE_DEBUG', 'False').lower() == 'true')
+DEBUG = (env.get('DEBUG', 'False').lower() == 'true')
+TEMPLATE_DEBUG = DEBUG or (env.get('TEMPLATE_DEBUG', 'False').lower() == 'true')
 
 
 
@@ -116,7 +121,7 @@ STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 
 # Check whether we should use local file system storage (default False) or AWS
-uses_local_storage = (getenv('LOCAL_STORAGE', 'False').lower() == 'true')
+uses_local_storage = (env.get('LOCAL_STORAGE', 'False').lower() == 'true')
 if uses_local_storage:
     ATTACHMENT_STORAGE = 'django.core.files.storage.FileSystemStorage'
 else:
