@@ -1,3 +1,4 @@
 *.pyc
 env/
 *.env
+bower_components/

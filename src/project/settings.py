@@ -37,6 +37,7 @@ ALLOWED_HOSTS = env.get('ALLOWED_HOSTS').split(',')
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+HTTPS_ENABLED = (env.get('HTTPS', 'off').lower() in ('true', 'yes', 'on'))
 
 
 # ======================================================================
@@ -72,6 +73,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -53,7 +53,7 @@ class UserProfile (_TimeStampedModel):
     fullname = models.CharField(_('Full name'), max_length=128, blank=True, help_text=_('The full name of the person or organization'))
     affiliation = models.CharField(max_length=256, blank=True, default='')
 
-    package = models.ForeignKey(AccountPackage, related_name='profiles')
+    package = models.ForeignKey(AccountPackage, related_name='profiles', null=True, blank=True)
     # overrides (reverse, AccountOverrides)
 
     def __str__(self):
