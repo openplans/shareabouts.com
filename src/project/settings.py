@@ -59,9 +59,11 @@ INSTALLED_APPS = (
     'sa_api_v2',
     'sa_api_v2.apikey',
     'sa_api_v2.cors',
+    'shareabouts_manager',
 
     # 3rd-party apps
     'rest_framework',
+    'south',
 
     # Core/contrib apps
     'django.contrib.admin',
