@@ -27,6 +27,8 @@ else:
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
+# See http://stackoverflow.com/questions/10584852/my-postgis-database-looks-fine-but-geodjango-thinks-otherwise-why
+POSTGIS_VERSION = (2, 1)
 
 # ======================================================================
 # Access, security, and cryptography
