@@ -404,10 +404,20 @@ html, body {
   margin-bottom: 0;
   text-shadow: 0 0 3px rgba(0,0,0,0.25);
   position: relative;
+  font-family: 'Dancing Script', cursive;
+  font-weight: 700;
 }
 .site-title a {
   text-decoration: none;
-  color: #fff;
+  color: LightCyan;
+}
+.manager { 
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 100;
+  font-size: 0.875em;
+  letter-spacing: -0.04em;
+  margin-left: -0.25em;
+  color: #ffb885;
 }
 a.login-link {
   float: right;
