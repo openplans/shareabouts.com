@@ -38,9 +38,9 @@ Plan In A Box
 
 {% block page %}
 
-<header class="product-header">
+<header class="site-header">
   <div class="container clearfix">
-    <!-- <h1 class="product-title"><a href="/"><span class="product-logo">&#9649;</span>&nbsp;Plan In A Box</a></h1> -->
+    <h1 class="site-title"><a href="/">Shareabouts</a></h1>
   {% if user.is_authenticated %}
     <p>Do something; the user is logged in!</p>
   {% else %}
@@ -49,15 +49,14 @@ Plan In A Box
     </nav>
   {% endif %}
   </div>
-
 </header>
 
 {% block main %}{% endblock %}
 
 <footer class="site-colophon">
-  <div class="container">
+  <div class="container clearfix">
+    <span class="byline">Shareabout is a product of</span>
     <a href="http://openplans.org/"><img src="{{ STATIC_URL }}images/OpenPlans-logo-whitetxt.png" class="openplans-logo"></a>
-    <p class="funding-info"><small>Plan In A Box is a product of <a href="http://openplans.org/">OpenPlans</a>, with support from <a href="http://www.knightfoundation.org/">Knight Foundation</a>.</small></p>
   </div>
 </footer>
 
