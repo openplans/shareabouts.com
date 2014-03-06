@@ -62,6 +62,7 @@ INSTALLED_APPS = (
     'shareabouts_manager',
 
     # 3rd-party apps
+    'jstemplate',
     'rest_framework',
     'south',
 
@@ -74,6 +75,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.gis',
 )
+
+HANDLEBARS_APP_DIRNAMES = ['jstemplates']
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',

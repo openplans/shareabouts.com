@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load handlebarsjs from jstemplate %}
+
+{% block title %}{{ project_data.title }}{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="{{ project_data.description }}">
+  {# TODO: Fill this in with project's owner name #}
+  <meta name="author" content="OpenPlans">
+
+  <!-- Twitter
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@planinabox">
+  <meta name="twitter:title" content="{{ project_data.title }}">
+  <meta name="twitter:description" content="{{ project_data.description }}">
+  {% comment %} TODO: Fill this in with project owner's twitter name
+  <meta name="twitter:creator" content="">
+  {% endcomment %}
+  {% comment %} TODO: Fill this in with Planbox logo or project image
+  <meta name="twitter:image:src" content="">
+  {% endcomment %}
+
+  <!- - Facebook
+  <meta property="og:site_name" content="Plan In A Box"/>
+  <meta property="og:title" content="{{ project_data.title }}" />
+  <meta property="og:description" content="{{ project_data.description }}" />
+  {% comment %} TODO: Fill this in with Planbox logo or project image
+  <meta property="og:image" content="" />
+  {% endcomment %}
+  -->
+
+{% endblock %}
+
+
+{% block styles %}
+  {% if debug %}
+
+  <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/normalize-css/normalize.css" type="text/css" media="screen, projection" />
+  <link rel="stylesheet" href="{{ STATIC_URL }}styles/style.css" type="text/css" media="screen, projection" />
+
+  {% else %}
+
+  <link rel="stylesheet" href="{{ STATIC_URL }}styles/style.min.css?deployed_at={{ settings.LAST_DEPLOY_DATE|urlencode:'' }}" type="text/css" media="screen, projection" />
+
+  {% endif %}
+{% endblock %}
+
+
+{% block scripts %}
+  {% if debug %}
+  <script src="{{ STATIC_URL }}bower_components/jquery/jquery.js"></script>
+
+  <script src="{{ STATIC_URL }}bower_components/handlebars/handlebars.js"></script>
+  <script src="{{ STATIC_URL }}bower_components/underscore/underscore.js"></script>
+  <script src="{{ STATIC_URL }}bower_components/backbone/backbone.js"></script>
+  <script src="{{ STATIC_URL }}bower_components/backbone.marionette/lib/backbone.marionette.js"></script>
+  <script src="{{ STATIC_URL }}bower_components/backbone-relational/backbone-relational.js"></script>
+  <script src="{{ STATIC_URL }}bower_components/django-csrf.js/django-csrf.js"></script>
+  {% else %}
+  <script src="{{ STATIC_URL }}scripts/components.min.js?deployed_at={{ settings.LAST_DEPLOY_DATE|urlencode:'' }}"></script>
+  {% endif %}
+
+
+  {% if debug %}
+  <script src="{{ STATIC_URL }}scripts/utils.js"></script>
+  <script src="{{ STATIC_URL }}scripts/handlebars-helpers.js"></script>
+  <script src="{{ STATIC_URL }}scripts/models.js"></script>
+  <script src="{{ STATIC_URL }}scripts/views.js"></script>
+  <script src="{{ STATIC_URL }}scripts/app.js"></script>
+  {% else %}
+  <script src="{{ STATIC_URL }}scripts/app.min.js?deployed_at={{ settings.LAST_DEPLOY_DATE|urlencode:'' }}"></script>
+  {% endif %}
+
+{% endblock %}

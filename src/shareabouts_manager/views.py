@@ -89,12 +89,17 @@ class DataSetsView (ManagerMixin, SSLRequired, TemplateView):
     template_name = 'datasets.html'
 
 
+class IndexView (SSLRequired, TemplateView):
+    template_name = 'index.html'
+
+
 # SEO
 class SiteMapView (ManagerMixin, TemplateView):
     template_name = 'sitemap.xml'
 
 
 # App views
+index_view = IndexView.as_view()
 datasets_view = DataSetsView.as_view()
 signup_view = SignupView.as_view()
 signin_view = SigninView.as_view()
