@@ -24,7 +24,7 @@ class SSLRequired (object):
         return super(SSLRequired, self).dispatch(request, *args, **kwargs)
 
 
-class ManagerMixin (SSLRequired, LoginRequired):
+class ManagerMixin (SSLRequired):
     def get_home_url(self, auth):
         if auth is None and self.request.user.is_authenticated():
             auth = self.request.user
@@ -85,11 +85,11 @@ class SigninView (ManagerMixin, SSLRequired, FormView):
         return super(SigninView, self).form_valid(form)
 
 
-class DataSetsView (ManagerMixin, SSLRequired, TemplateView):
+class DataSetsView (ManagerMixin, LoginRequired, SSLRequired, TemplateView):
     template_name = 'datasets.html'
 
 
-class IndexView (SSLRequired, TemplateView):
+class IndexView (ManagerMixin, SSLRequired, TemplateView):
     template_name = 'index.html'
 
 

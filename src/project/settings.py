@@ -47,7 +47,7 @@ HTTPS_ENABLED = (env.get('HTTPS', 'off').lower() in ('true', 'yes', 'on'))
 DEBUG = (env.get('DEBUG', 'False').lower() == 'true')
 TEMPLATE_DEBUG = DEBUG or (env.get('TEMPLATE_DEBUG', 'False').lower() == 'true')
 
-
+INTERNAL_IPS = ('127.0.0.1',)
 
 # ======================================================================
 # Application definition
@@ -63,6 +63,7 @@ INSTALLED_APPS = (
 
     # 3rd-party apps
     'jstemplate',
+    'djangobars',
     'rest_framework',
     'south',
 
