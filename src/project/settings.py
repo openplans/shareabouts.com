@@ -66,6 +66,7 @@ INSTALLED_APPS = (
     'djangobars',
     'rest_framework',
     'south',
+    'social.apps.django_app.default',
 
     # Core/contrib apps
     'django.contrib.admin',
@@ -104,6 +105,18 @@ DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
 
 # ======================================================================
+# Cache
+# ======================================================================
+
+import django_cache_url
+CACHES = {'default': django_cache_url.config()}
+
+# How long to keep api cache values. Since the api will invalidate the cache
+# automatically when appropriate, this can (and should) be set to something
+# large.
+API_CACHE_TIMEOUT = 604800  # a week
+
+# ======================================================================
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 # ======================================================================
@@ -117,7 +130,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # ======================================================================
 # Static files (CSS, JavaScript, Images)
@@ -134,3 +146,11 @@ if uses_local_storage:
 else:
     # Set up AWS storage
     pass
+
+# ======================================================================
+# Django Rest Framework
+# ======================================================================
+REST_FRAMEWORK = {
+    'PAGINATE_BY': 100,
+    'PAGINATE_BY_PARAM': 'page_size'
+}

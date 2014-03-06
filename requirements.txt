@@ -10,14 +10,20 @@ newrelic==2.14.0.11
 
 
 # ==============================
-# Database
+# Database and Persistance
 # ==============================
 
-dj-database-url==0.2.2
-psycopg2==2.5.2
-django-cache-url==0.8.0
-django-redis==3.5.1
-south==0.8.4
+# DB Settings and Management
+psycopg2
+south
+dj-database-url
+
+# Caching
+django-redis
+
+# File Storate
+boto
+django-storages
 
 
 
@@ -28,15 +34,24 @@ south==0.8.4
 dj-static==0.0.5
 
 
+# ==============================
+# User Accounts and Social Media
+# ==============================
+
+python-social-auth
+
 
 # ==============================
 # API
 # ==============================
 
 #git+https://github.com/openplans/shareabouts-api.git@api-app#egg=shareabouts-api
-djangorestframework==2.3.12
-ujson==1.33
-
+djangorestframework>=2.3.11
+djangorestframework-csv>=1.3.0
+six>=1.4.1
+markdown  # For browsable API docs
+python-dateutil
+ujson
 
 # ==============================
 # Routes and Templating
