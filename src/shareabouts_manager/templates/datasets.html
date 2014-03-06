@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load handlebarsjs from jstemplate %}
+{% load as_json from utils %}
 
 {% block title %}{{ project_data.title }}{% endblock %}
 
@@ -72,6 +73,8 @@
 
     </div>
   </section>
+
+  {{ datasets|as_json }}
 
 {% endblock %}
 

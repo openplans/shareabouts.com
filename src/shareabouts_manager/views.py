@@ -8,6 +8,8 @@ from django.shortcuts import resolve_url
 from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
 from django.views.generic import TemplateView, FormView
+from sa_api_v2.models import DataSet
+from sa_api_v2.serializers import DataSetSerializer
 from shareabouts_manager.decorators import ssl_required
 from shareabouts_manager.forms import UserCreationForm
 
@@ -87,6 +89,21 @@ class SigninView (ManagerMixin, SSLRequired, FormView):
 
 class DataSetsView (ManagerMixin, LoginRequired, SSLRequired, TemplateView):
     template_name = 'datasets.html'
+
+    def get_datasets_queryset(self, owner):
+        return DataSet.objects.filter(owner=owner)
+
+    def get_context_data(self, **kwargs):
+        context = super(DataSetsView, self).get_context_data(**kwargs)
+
+        if self.request.user.is_authenticated():
+            owner = self.request.user
+            datasets = self.get_datasets_queryset(owner)
+            datasets_serializer = DataSetSerializer(datasets)
+            datasets_serializer.context = {'request': self.request, 'view': self}
+            context['datasets'] = datasets_serializer.data
+
+        return context
 
 
 class IndexView (ManagerMixin, SSLRequired, TemplateView):
