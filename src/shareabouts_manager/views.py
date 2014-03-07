@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
 from django.views.generic import TemplateView, FormView
 from sa_api_v2.models import DataSet
-from sa_api_v2.serializers import DataSetSerializer
+from sa_api_v2.serializers import DataSetSerializer, ApiKeySerializer
 from shareabouts_manager.decorators import ssl_required
 from shareabouts_manager.forms import UserCreationForm
 
@@ -91,7 +91,7 @@ class DataSetsView (ManagerMixin, LoginRequired, SSLRequired, TemplateView):
     template_name = 'datasets.html'
 
     def get_datasets_queryset(self, owner):
-        return DataSet.objects.filter(owner=owner)
+        return DataSet.objects.filter(owner=owner).prefetch_related('keys')
 
     def get_context_data(self, **kwargs):
         context = super(DataSetsView, self).get_context_data(**kwargs)
@@ -99,9 +99,18 @@ class DataSetsView (ManagerMixin, LoginRequired, SSLRequired, TemplateView):
         if self.request.user.is_authenticated():
             owner = self.request.user
             datasets = self.get_datasets_queryset(owner)
+
+            # Add dataset details to the context
             datasets_serializer = DataSetSerializer(datasets)
             datasets_serializer.context = {'request': self.request, 'view': self}
-            context['datasets'] = datasets_serializer.data
+            datasets_data = datasets_serializer.data
+
+            # Add api keys to the context
+            for dataset_data, dataset in zip(datasets_data, datasets):
+                apikey_serializer = ApiKeySerializer(dataset.keys.all(), many=True)
+                dataset_data['keys'] = apikey_serializer.data
+
+            context['datasets'] = datasets_data
 
         return context
 

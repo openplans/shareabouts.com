@@ -3,7 +3,9 @@ env/
 *.env
 bower_components/
 node_modules
+attachments
 
+# Built assets
 *.min.js
 *.min.css
 .tmp

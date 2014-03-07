@@ -35,46 +35,6 @@
 
 {% block page %}
 
-  <header class="manager-header">
-    <div class="container clearfix">
-      <h1 class="site-title manager-title"><a href="/">Shareabouts <span class="manager">Manager</span></a></h1>
-    </div>
-  </header>
-
-  <section class="">
-    <div class="container">
-
-      <h2>Username's Datasets</h2>
-
-      <ul class="dataset-list unstyled-list">
-        <li class="dataset clearfix">
-          <a href="#" class="edit-dataset-link"><span class="icon icon-pencil">&#9999;</span> Edit</a>
-          <h4 class="dataset-title">Demo Data</h4>
-          <p class="key-value-pair clearfix"><span class="key">Root URL:</span> <span class="value">http://www.example.org/username/dataset/</span> <a href="#" class="btn btn-mini copy-btn">copy</a></p>
-          <p class="key-value-pair clearfix"><span class="key">API Key:</span> <span class="value">FOOBARQWERTY1234567890OMGROFLOL</span> <a href="#" class="btn btn-mini copy-btn">copy</a></p>
-          <ul class="stats-list unstyled-list">
-            <li class="stat"><span class="count">100</span> <span class="unit">places</span></li>
-            <li class="stat"><span class="count">1,048</span> <span class="unit">supports</span></li>
-            <li class="stat"><span class="count">500</span> <span class="unit">comments</span></li>
-          </ul>
-        </li>
-        <li class="dataset clearfix">
-          <a href="#" class="edit-dataset-link"><span class="icon icon-pencil">&#9999;</span> Edit</a>
-          <h4 class="dataset-title">Demo Data</h4>
-          <p class="key-value-pair clearfix"><span class="key">Root URL:</span> <span class="value">http://www.example.org/username/dataset/</span> <a href="#" class="btn btn-mini copy-btn">copy</a></p>
-          <p class="key-value-pair clearfix"><span class="key">API Key:</span> <span class="value">FOOBARQWERTY1234567890OMGROFLOL</span> <a href="#" class="btn btn-mini copy-btn">copy</a></p>
-          <ul class="stats-list unstyled-list">
-            <li class="stat"><span class="count">100</span> <span class="unit">places</span></li>
-            <li class="stat"><span class="count">1,048</span> <span class="unit">supports</span></li>
-            <li class="stat"><span class="count">500</span> <span class="unit">comments</span></li>
-          </ul>
-        </li>
-      </ul>
-
-    </div>
-  </section>
-
-  {{ datasets|as_json }}
 
 {% endblock %}
 
@@ -107,9 +67,16 @@
   <script src="{{ STATIC_URL }}scripts/components.min.js?deployed_at={{ settings.LAST_DEPLOY_DATE|urlencode:'' }}"></script>
   {% endif %}
 
+  {% handlebarsjs '(.*)' precompile register_partials %}
+
+  <script>
+    var Shareabouts = Shareabouts || {};
+    Shareabouts.Data = {
+      datasets: {{ datasets|as_json }}
+    };
+  </script>
 
   {% if debug %}
-  <script src="{{ STATIC_URL }}scripts/utils.js"></script>
   <script src="{{ STATIC_URL }}scripts/handlebars-helpers.js"></script>
   <script src="{{ STATIC_URL }}scripts/models.js"></script>
   <script src="{{ STATIC_URL }}scripts/views.js"></script>
@@ -117,5 +84,6 @@
   {% else %}
   <script src="{{ STATIC_URL }}scripts/app.min.js?deployed_at={{ settings.LAST_DEPLOY_DATE|urlencode:'' }}"></script>
   {% endif %}
+
 
 {% endblock %}

@@ -300,6 +300,9 @@ module.exports = function (grunt) {
             '<%= yeoman.app %>/bower_components/django-csrf.js/django-csrf.js'
           ],
           '<%= yeoman.app %>/scripts/app.min.js': [
+            '<%= yeoman.app %>/scripts/handlebars-helpers.js',
+            '<%= yeoman.app %>/scripts/models.js',
+            '<%= yeoman.app %>/scripts/views.js',
             '<%= yeoman.app %>/scripts/app.js'
           ],
           '<%= yeoman.app %>/scripts/modernizr.min.js': [
