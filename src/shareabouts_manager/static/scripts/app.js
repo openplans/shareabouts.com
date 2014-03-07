@@ -9,12 +9,12 @@ var Shareabouts = Shareabouts || {};
   NS.app = new Backbone.Marionette.Application();
 
   NS.app.addRegions({
-    mainRegion: '#page',
+    mainRegion: '.manager-content',
     overlayRegion: '#overlay-container'
   });
 
   NS.app.addInitializer(function(options){
-    var datasetsCollection = new Backbone.Collection(NS.Data.datasets);
+    var datasetsCollection = new NS.DataSetCollection(NS.Data.datasets);
 
     NS.app.mainRegion.show(new NS.DataSetListView({
       collection: datasetsCollection

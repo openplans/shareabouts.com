@@ -1,16 +1,15 @@
-        <li class="dataset clearfix">
-          <a href="#" class="edit-dataset-link"><span class="icon icon-pencil">&#9999;</span> Edit</a>
-          <h4 class="dataset-title">{{ display_name }}</h4>
-          <p class="key-value-pair clearfix"><span class="key">Root URL:</span> <span class="value">{{ url }}</span> <!-- Temporary: <a href="#" class="btn btn-mini copy-btn">copy</a> --></p>
-          <p class="key-value-pair clearfix"><span class="key">API Key:</span> <span class="value">{{ keys.0.key }}</span> <!-- Temporary: <a href="#" class="btn btn-mini copy-btn">copy</a> --></p>
-          <ul class="stats-list unstyled-list">
-            <li class="stat">
-              <span class="count">{{pretty_number places.length }}</span> <span class="unit">places</span>
-            </li>
-            {{#each submission_sets}}
-            <li class="stat">
-              <span class="count">{{pretty_number length }}</span> <span class="unit">{{ @key }}</span>
-            </li>
-            {{/each}}
-          </ul>
-        </li>
+  <a href="#" class="edit-dataset-link"><span class="icon icon-pencil">&#9999;</span> Edit</a>
+  <h4 class="dataset-title">{{ display_name }}</h4>
+  <p class="key-value-pair clearfix"><span class="key">Root URL:</span> <span class="value">{{ url }}</span> <!-- Temporary: <a href="#" class="btn btn-mini copy-btn">copy</a> --></p>
+  <p class="key-value-pair clearfix"><span class="key">API Key:</span> <span class="value">{{ keys.0.key }}</span> <!-- Temporary: <a href="#" class="btn btn-mini copy-btn">copy</a> --></p>
+  <ul class="stats-list unstyled-list">
+    <li class="stat">
+      <span class="count">{{pretty_number places.length }}</span> <span class="unit">places</span>
+    </li>
+    {{#each submission_sets}}
+    <li class="stat">
+      <span class="count">{{pretty_number length }}</span> <span class="unit">{{ @key }}</span>
+    </li>
+    {{/each}}
+  </ul>
+

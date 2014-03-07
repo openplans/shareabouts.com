@@ -111,6 +111,7 @@ class DataSetsView (ManagerMixin, LoginRequired, SSLRequired, TemplateView):
                 dataset_data['keys'] = apikey_serializer.data
 
             context['datasets'] = datasets_data
+            context['username'] = owner.username
 
         return context
 

@@ -11,29 +11,58 @@ var Shareabouts = Shareabouts || {};
   };
 
   // View =====================================================================
-  NS.ModalView = Backbone.Marionette.ItemView.extend({
-    template: '#modal-tpl',
+  NS.DataSetFormModalView = Backbone.Marionette.ItemView.extend({
+    template: '#dataset-form-modal-tpl',
     className: 'overlay',
     ui: {
-      closeBtn: '.btn-close'
+      closeBtn: '.btn-close',
+      form: 'form'
     },
     events: {
+      'submit @ui.form': 'handleSubmit',
       'click @ui.closeBtn': 'handleClose'
+    },
+    handleSubmit: function(evt) {
+      evt.preventDefault();
+      var self = this;
+      this.model.save({
+        display_name: this.ui.form.find('[name="display_name"]').val(),
+        slug: this.ui.form.find('[name="slug"]').val(),
+      }, {
+        success: function() {
+          self.close();
+        },
+        error: function() {
+          window.alert('An error occurred. Dataset was not saved.');
+        }
+      });
     },
     handleClose: function(evt) {
       evt.preventDefault();
       this.close();
     }
-  });
 
-  // NS.WelcomeModalView = NS.ModalView.extend({
-  //   template: '#welcome-modal-tpl'
-  // });
+  });
 
   NS.DataSetView = Backbone.Marionette.ItemView.extend({
     template: '#dataset-tpl',
     tagName: 'li',
-    className: 'dataset clearfix'
+    className: 'dataset clearfix',
+    ui: {
+      editBtn: '.edit-dataset-link'
+    },
+    events: {
+      'click @ui.editBtn': 'handleEdit'
+    },
+    modelEvents: {
+      'change': 'render'
+    },
+    handleEdit: function(evt) {
+      evt.preventDefault();
+      NS.app.overlayRegion.show(new NS.DataSetFormModalView({
+        model: this.model
+      }));
+    }
   });
 
   NS.DataSetListView = Backbone.Marionette.CompositeView.extend({

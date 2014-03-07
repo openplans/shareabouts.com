@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'manager-base.html' %}
 {% load handlebarsjs from jstemplate %}
 {% load as_json from utils %}
 
@@ -33,9 +33,8 @@
 {% endblock %}
 
 
-{% block page %}
-
-
+{% block main %}
+  <section class="manager-content"></section>
 {% endblock %}
 
 
@@ -72,7 +71,9 @@
   <script>
     var Shareabouts = Shareabouts || {};
     Shareabouts.Data = {
-      datasets: {{ datasets|as_json }}
+      datasets: {{ datasets|as_json }},
+      {% comment %} set in the dataset view, used in models.js {% endcomment %}
+      username: '{{ username }}'
     };
   </script>
 
