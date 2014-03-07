@@ -7,3 +7,7 @@ node_modules
 *.min.js
 *.min.css
 .tmp
+
+# We often use Sublime Text 2
+*.sublime-project
+*.sublime-workspace
