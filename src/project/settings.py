@@ -49,6 +49,7 @@ TEMPLATE_DEBUG = DEBUG or (env.get('TEMPLATE_DEBUG', 'False').lower() == 'true')
 
 INTERNAL_IPS = ('127.0.0.1',)
 
+
 # ======================================================================
 # Application definition
 # ======================================================================
@@ -116,6 +117,7 @@ CACHES = {'default': django_cache_url.config()}
 # large.
 API_CACHE_TIMEOUT = 604800  # a week
 
+
 # ======================================================================
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -130,6 +132,7 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
 
 # ======================================================================
 # Static files (CSS, JavaScript, Images)
@@ -146,6 +149,7 @@ if uses_local_storage:
 else:
     # Set up AWS storage
     pass
+
 
 # ======================================================================
 # Django Rest Framework

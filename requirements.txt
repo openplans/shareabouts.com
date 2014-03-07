@@ -8,7 +8,6 @@ django-toolbelt==0.0.1
 newrelic==2.14.0.11
 
 
-
 # ==============================
 # Database and Persistance
 # ==============================
@@ -24,7 +23,6 @@ django-redis
 # File Storate
 boto
 django-storages
-
 
 
 # ==============================
@@ -52,6 +50,7 @@ six>=1.4.1
 markdown  # For browsable API docs
 python-dateutil
 ujson
+
 
 # ==============================
 # Routes and Templating
