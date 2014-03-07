@@ -70,9 +70,10 @@ class UserCreationForm(forms.ModelForm):
         if commit:
             auth.save()
             auth.profile = UserProfile(package=None)
-            auth.profile.overrides = AccountOverrides()
             auth.profile.affiliation = self.cleaned_data["affiliation"]
             auth.profile.save()
+
+            AccountOverrides.objects.create(profile=auth.profile)
 
             # TODO: Send welcome email
 
