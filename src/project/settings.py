@@ -92,6 +92,9 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'project.urls'
 
+LOGIN_URL = 'manager-signin'
+LOGOUT_URL = 'manager-index'
+
 WSGI_APPLICATION = 'project.wsgi.application'
 
 
