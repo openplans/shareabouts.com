@@ -105,11 +105,6 @@ class DataSetsView (ManagerMixin, LoginRequired, SSLRequired, TemplateView):
             datasets_serializer.context = {'request': self.request, 'view': self}
             datasets_data = datasets_serializer.data
 
-            # Add api keys to the context
-            for dataset_data, dataset in zip(datasets_data, datasets):
-                apikey_serializer = ApiKeySerializer(dataset.keys.all(), many=True)
-                dataset_data['keys'] = apikey_serializer.data
-
             context['datasets'] = datasets_data
             context['username'] = owner.username
 
