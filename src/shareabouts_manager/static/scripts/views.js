@@ -25,17 +25,33 @@ var Shareabouts = Shareabouts || {};
     handleSubmit: function(evt) {
       evt.preventDefault();
       var self = this;
-      this.model.save({
-        display_name: this.ui.form.find('[name="display_name"]').val(),
-        slug: this.ui.form.find('[name="slug"]').val(),
-      }, {
-        success: function() {
-          self.close();
-        },
-        error: function() {
-          window.alert('An error occurred. Dataset was not saved.');
-        }
-      });
+
+      if (this.model) {
+        this.model.save({
+          display_name: this.ui.form.find('[name="display_name"]').val(),
+          slug: this.ui.form.find('[name="slug"]').val(),
+        }, {
+          success: function() {
+            self.close();
+          },
+          error: function() {
+            window.alert('An error occurred. Dataset was not saved.');
+          }
+        });
+      } else {
+        this.collection.create({
+          display_name: this.ui.form.find('[name="display_name"]').val(),
+          slug: this.ui.form.find('[name="slug"]').val(),
+        }, {
+          wait: true,
+          success: function() {
+            self.close();
+          },
+          error: function() {
+            window.alert('An error occurred. Dataset was not saved.');
+          }
+        });
+      }
     },
     handleClose: function(evt) {
       evt.preventDefault();
@@ -68,7 +84,19 @@ var Shareabouts = Shareabouts || {};
   NS.DataSetListView = Backbone.Marionette.CompositeView.extend({
     template: '#dataset-list-tpl',
     itemView: NS.DataSetView,
-    itemViewContainer: '.dataset-list'
+    itemViewContainer: '.dataset-list',
+    ui: {
+      newBtn: '.new-dataset-link'
+    },
+    events: {
+      'click @ui.newBtn': 'handleNew'
+    },
+    handleNew: function(evt) {
+      evt.preventDefault();
+      NS.app.overlayRegion.show(new NS.DataSetFormModalView({
+        collection: this.collection
+      }));
+    }
   });
 
 }(Shareabouts, jQuery));
