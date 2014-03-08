@@ -22,36 +22,32 @@ var Shareabouts = Shareabouts || {};
       'submit @ui.form': 'handleSubmit',
       'click @ui.closeBtn': 'handleClose'
     },
-    handleSubmit: function(evt) {
-      evt.preventDefault();
-      var self = this;
+    save: function(data) {
+      var self = this,
+          saveFn;
 
       if (this.model) {
-        this.model.save({
-          display_name: this.ui.form.find('[name="display_name"]').val(),
-          slug: this.ui.form.find('[name="slug"]').val(),
-        }, {
-          success: function() {
-            self.close();
-          },
-          error: function() {
-            window.alert('An error occurred. Dataset was not saved.');
-          }
-        });
+        saveFn = _.bind(this.model.save, this.model);
       } else {
-        this.collection.create({
-          display_name: this.ui.form.find('[name="display_name"]').val(),
-          slug: this.ui.form.find('[name="slug"]').val(),
-        }, {
-          wait: true,
-          success: function() {
-            self.close();
-          },
-          error: function() {
-            window.alert('An error occurred. Dataset was not saved.');
-          }
-        });
+        saveFn = _.bind(this.collection.create, this.collection);
       }
+
+      saveFn(data, {
+        wait: true,
+        success: function() {
+          self.close();
+        },
+        error: function() {
+          window.alert('An error occurred. Dataset was not saved.');
+        }
+      });
+    },
+    handleSubmit: function(evt) {
+      evt.preventDefault();
+      this.save({
+        display_name: this.ui.form.find('[name="display_name"]').val(),
+        slug: this.ui.form.find('[name="slug"]').val(),
+      });
     },
     handleClose: function(evt) {
       evt.preventDefault();
