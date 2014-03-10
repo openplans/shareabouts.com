@@ -662,13 +662,19 @@ a.logout-link {
 	   -moz-box-sizing: border-box;
 	        box-sizing: border-box;
 }
-.modal-head {
+.modal-header {
   margin: -1em -1em 1em;
   padding: 1em;
   background: #eee;
 }
-.modal-header {
+.modal-title {
   margin-bottom: 0;
+}
+.modal-header .btn-close {
+  float: right;
+  text-decoration: none;
+  position: relative;
+  top: 0.375em;
 }
 .modal-body {  
 }
