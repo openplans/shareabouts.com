@@ -135,7 +135,7 @@ img {
   padding: 0.75em 1em 0.5em;
 }
 .btn-small {
-  font-size: 0.875em;
+  font-size: 0.75em;
 }
 .btn-xsmall {
   font-size: 0.5em;
@@ -409,6 +409,7 @@ html, body {
   position: relative;
   font-family: 'Dancing Script', cursive;
   font-weight: 700;
+  float: left;
 }
 .site-title a {
   text-decoration: none;
@@ -428,6 +429,12 @@ a.login-link {
   font-weight: 800;
   background-color: LightBlue;
   border-radius: 0.25em;
+}
+a.logout-link {
+  color: #ffb885;
+  font-size: 0.625em;
+  text-decoration: none;
+  text-transform: uppercase;
 }
 
 /* User Navigation */
@@ -497,8 +504,7 @@ a.login-link {
 -------------------------------------------------------------- */
 
 .manager-header {
-  background: #268099;
-  color: #fff;
+  padding: 0;
 }
 .manager-header .container {
   max-width: none;
@@ -509,9 +515,25 @@ a.login-link {
 .manager-title a {
 }
 
+.manager-page-header {
+  margin: 0 0 0.75em;
+}
+.manager-page-title {
+  float: left;
+  margin: 0 0.25em 0 0;
+}
+.manager-page-title small {
+  font-weight: 400;
+}
+
 
 /* =Datasets
 -------------------------------------------------------------- */
+
+.new-dataset-link {
+  position: relative;
+  top: 0.375em;
+}
 
 .dataset-list {}
 .dataset-list .dataset {
@@ -659,6 +681,9 @@ a.login-link {
   .site-header {
     padding-bottom: 0.75em;
   }
+  .manager-header {
+    padding-bottom: 0;
+  }
   .site-title {
     font-size: 2.5em;
   }
@@ -677,6 +702,10 @@ a.login-link {
   .site-header {
     padding-top: 3em;
     padding-bottom: 1.5em;
+  }
+  .manager-header {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .interest-form p.email {

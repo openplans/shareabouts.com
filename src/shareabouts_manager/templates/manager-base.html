@@ -38,11 +38,13 @@ Plan In A Box
 
 {% block page %}
 
-<header class="site-header">
+<header class="site-header{% if user.is_authenticated %} manager-header{% endif %}">
   <div class="container clearfix">
-    <h1 class="site-title"><a href="/">Shareabouts <span class="manager">Manager</span></a></h1>
+    <h1 class="site-title{% if user.is_authenticated %} manager-title{% endif %}"><a href="/">Shareabouts <span class="manager">Manager</span></a></h1>
   {% if user.is_authenticated %}
-    <p>Do something; the user is logged in!</p>
+    <nav class="user-nav">
+      <a href="/signout" class="logout-link">Sign Out</a>
+    </nav>
   {% else %}
     <nav class="user-nav">
       <a href="/signin" class="login-link user-link nobreak">Sign In</a>
