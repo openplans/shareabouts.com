@@ -1,4 +1,4 @@
-/*globals Backbone */
+/*globals Backbone _ */
 
 var Shareabouts = Shareabouts || {};
 
@@ -6,7 +6,25 @@ var Shareabouts = Shareabouts || {};
   'use strict';
 
   NS.DataSetModel = Backbone.Model.extend({
-    idAttribute: 'slug'
+    initialize: function() {
+      // Slug is used in the api, but it also editable. Cache it for the url
+      // (see url() below) so we can modify it with the old slug after we have
+      // already set the new one.
+
+      // Set when constructed
+      this.slug = this.get('slug');
+      // Set when synced with the db
+      this.on('sync', function() {
+        this.slug = this.get('slug');
+      });
+    },
+    url: function() {
+      var base = _.result(this.collection, 'url');
+      if (this.isNew()) {
+        return base;
+      }
+      return base.replace(/([^\/])$/, '$1/') + encodeURIComponent(this.slug);
+    }
   });
 
   NS.DataSetCollection = Backbone.Collection.extend({

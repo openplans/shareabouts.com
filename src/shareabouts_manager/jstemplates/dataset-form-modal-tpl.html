@@ -1,6 +1,7 @@
 <div class="modal">
-  <div class="modal-head">
-    <h3 class="modal-header">
+  <div class="modal-header clearfix">
+    <a href="#" class="btn-close " tabindex="4">{{#_}}Cancel{{/_}}</a>
+    <h3 class="modal-title">
       {{#if display_name}}
         {{#_}}Edit{{/_}} {{ display_name }}
       {{else}}
@@ -11,17 +12,15 @@
   <div class="modal-body">
     <form>
     <p>
-      <input required value="{{ display_name }}" type="text" name="display_name" id="my-display-name" class="input-block" placeholder="{{#_}}Display Name{{/_}}" pattern="[A-Za-z0-9-_ ]{1,30}" max="30" tabindex="1">
-      <label for="my-display-name" class="float-label"><strong>{{#_}}Display Name{{/_}}</strong></label>
+      <input required value="{{ display_name }}" type="text" name="display_name" id="my-display-name" class="input-block" placeholder="{{#_}}Name{{/_}}" pattern="[A-Za-z0-9-_ ]{1,30}" max="30" tabindex="1">
+      <label for="my-display-name" class="float-label"><strong>{{#_}}Name{{/_}}</strong></label>
     </p>
     <p>
       <input required value="{{ slug }}" type="text" name="slug" id="my-slug" class="input-block" placeholder="{{#_}}URL Slug{{/_}}" pattern="[A-Za-z0-9-]{1,30}" max="30" tabindex="2">
       <label for="my-slug" class="float-label"><strong>{{#_}}URL Slug{{/_}}</strong></label>
     </p>
-    <hr>
-    <p style="text-align:right;">
-      <input type="submit" value="{{#_}}Save{{/_}}" class="btn btn-small btn-secondary" tabindex="3">
-      <a href="#" class="btn-close" tabindex="4">{{#_}}cancel{{/_}}</a>
+    <p>
+      <input type="submit" value="{{#_}}Save{{/_}}" class="btn" tabindex="3">
     </p>
     </form>
   </div>

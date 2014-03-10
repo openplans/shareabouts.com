@@ -22,19 +22,31 @@ var Shareabouts = Shareabouts || {};
       'submit @ui.form': 'handleSubmit',
       'click @ui.closeBtn': 'handleClose'
     },
-    handleSubmit: function(evt) {
-      evt.preventDefault();
-      var self = this;
-      this.model.save({
-        display_name: this.ui.form.find('[name="display_name"]').val(),
-        slug: this.ui.form.find('[name="slug"]').val(),
-      }, {
+    save: function(data) {
+      var self = this,
+          saveFn;
+
+      if (this.model) {
+        saveFn = _.bind(this.model.save, this.model);
+      } else {
+        saveFn = _.bind(this.collection.create, this.collection);
+      }
+
+      saveFn(data, {
+        wait: true,
         success: function() {
           self.close();
         },
         error: function() {
           window.alert('An error occurred. Dataset was not saved.');
         }
+      });
+    },
+    handleSubmit: function(evt) {
+      evt.preventDefault();
+      this.save({
+        display_name: this.ui.form.find('[name="display_name"]').val(),
+        slug: this.ui.form.find('[name="slug"]').val(),
       });
     },
     handleClose: function(evt) {
@@ -68,7 +80,19 @@ var Shareabouts = Shareabouts || {};
   NS.DataSetListView = Backbone.Marionette.CompositeView.extend({
     template: '#dataset-list-tpl',
     itemView: NS.DataSetView,
-    itemViewContainer: '.dataset-list'
+    itemViewContainer: '.dataset-list',
+    ui: {
+      newBtn: '.new-dataset-link'
+    },
+    events: {
+      'click @ui.newBtn': 'handleNew'
+    },
+    handleNew: function(evt) {
+      evt.preventDefault();
+      NS.app.overlayRegion.show(new NS.DataSetFormModalView({
+        collection: this.collection
+      }));
+    }
   });
 
 }(Shareabouts, jQuery));
