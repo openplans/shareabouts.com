@@ -26,6 +26,7 @@ class _TimeStampedModel (models.Model):
 
 class _BaseAccountProperties (models.Model):
     max_datasets = models.IntegerField(null=True, blank=True)
+    max_places = models.IntegerField(null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -35,6 +36,7 @@ class _BaseAccountProperties (models.Model):
 class AccountPackage (_TimeStampedModel, _BaseAccountProperties):
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True)
+    stripe_id = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
         return self.name
@@ -52,6 +54,7 @@ class UserProfile (_TimeStampedModel):
     auth = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='profile', null=True, blank=True, on_delete=models.CASCADE)
     fullname = models.CharField(_('Full name'), max_length=128, blank=True, help_text=_('The full name of the person or organization'))
     affiliation = models.CharField(max_length=256, blank=True, default='')
+    stripe_id = models.CharField(max_length=50, blank=True)
 
     package = models.ForeignKey(AccountPackage, related_name='profiles', null=True, blank=True)
     # overrides (reverse, AccountOverrides)
