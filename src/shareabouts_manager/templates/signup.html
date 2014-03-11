@@ -10,8 +10,7 @@
     <div class="alert alert-error"><strong>{{ form.errors.username.as_text|slice:"2:"|safe }}</strong></div>
     {% endif %}
 
-    <h3>Sign up for a Shareabouts Manager account!</h3>
-    <p>Choose a username and password to create your account. Please note, the username you select will be publicly visible in your project URLs.</p>
+    <h3>Create an account&hellip;</h3>
     <form method="POST">
       {% csrf_token %}
 
