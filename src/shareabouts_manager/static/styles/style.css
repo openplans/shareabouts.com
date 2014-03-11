@@ -385,7 +385,7 @@ html, body {
 }
 .container {
   position: relative;
-  max-width: 44em;
+  max-width: 45em;
   padding: 1em;
   margin: 0 auto;
 	-webkit-box-sizing: border-box;
@@ -527,6 +527,68 @@ a.logout-link {
 .product-pitch-header {
   font-weight: 100;
   font-size: 2em;
+}
+
+
+/* =Plans Grid
+-------------------------------------------------------------- */
+
+.plans {
+  background-color: #407280;
+  color: #ddd;
+  padding: 1em 0;
+}
+.plan-list {}
+.plan {
+  background-color: #eee;
+  color: #666;
+  line-height: 1.25;
+  margin: 0 0 1em;
+  padding: 1em !important;
+  border-radius: 0.75em;
+  position: relative;
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+}
+.plan-title {
+  font-size: 1.75em;
+  margin: 0;
+}
+.plan-price {
+  color: #ff8b38;
+  font-size: 2.25em;
+  font-weight: 800;
+  text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+  margin: 0;
+}
+.plan-price .unit {
+  position: relative; 
+  top: -0.25em; 
+  font-size: 0.625em;
+  font-weight: 400;
+}
+.plan-price small {
+  font-size: 0.5em;
+  font-weight: 400;
+}
+.plan-description {
+  clear: left;
+  margin: 0;
+}
+.plan-link {
+  display: block;
+  text-indent: -9999px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 0.25em solid #48a5bf;
+  border-radius: 0.75em;
+}
+.plan-link:hover {
+  border-color: #a1cbcf;
 }
 
 
@@ -709,7 +771,7 @@ a.logout-link {
   }
 }
 
-@media only screen and (min-width: 44em) {
+@media only screen and (min-width: 45em) {
   #page {
     font-size: 1.25em;
   }
@@ -756,6 +818,39 @@ a.logout-link {
     right: 2em;
   }
 
+  .plan-count-2 {
+    padding-left: 1em;
+  }
+  .plan-count-3 {
+    padding-left: 2em;
+  }
+  .plan-count-4 {
+    padding-left: 3em;
+    font-size: 0.875em;
+  }
+  .plan-count-2 .plan,
+  .plan-count-3 .plan,
+  .plan-count-4 .plan {
+    width: 50%;
+    float: left;
+    margin-right: 1em;
+    left: 1em;
+  }
+  .plan-count-2 .plan:first-child {
+    margin-left: -2em;
+  }
+  .plan-count-3 .plan {
+    width: 33.33%;
+  }
+  .plan-count-3 .plan:first-child {
+    margin-left: -3em;
+  }
+  .plan-count-4 .plan {
+    width: 25%;
+  }
+  .plan-count-4 .plan:first-child {
+    margin-left: -4em;
+  }
 }
 
 @media only screen and (min-width: 52em) {
