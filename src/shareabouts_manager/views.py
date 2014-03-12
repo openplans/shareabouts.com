@@ -111,6 +111,10 @@ class DataSetsView (ManagerMixin, LoginRequired, SSLRequired, TemplateView):
         return context
 
 
+class ProfileView (ManagerMixin, LoginRequired, SSLRequired, TemplateView):
+    template_name = 'profile.html'
+
+
 class IndexView (ManagerMixin, SSLRequired, TemplateView):
     template_name = 'index.html'
 
@@ -122,6 +126,7 @@ class SiteMapView (ManagerMixin, TemplateView):
 
 # App views
 index_view = IndexView.as_view()
+profile_view = ProfileView.as_view()
 datasets_view = DataSetsView.as_view()
 signup_view = SignupView.as_view()
 signin_view = SigninView.as_view()
