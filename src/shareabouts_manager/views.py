@@ -9,9 +9,11 @@ from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
 from django.views.generic import TemplateView, FormView
 from sa_api_v2.models import DataSet
-from sa_api_v2.serializers import DataSetSerializer, ApiKeySerializer
+from sa_api_v2.serializers import DataSetSerializer
 from shareabouts_manager.decorators import ssl_required
 from shareabouts_manager.forms import UserCreationForm
+from shareabouts_manager.models import AccountPackage
+from shareabouts_manager.serializers import AccountPackageSerializer
 
 
 class LoginRequired (object):
@@ -31,6 +33,22 @@ class ManagerMixin (SSLRequired):
         if auth is None and self.request.user.is_authenticated():
             auth = self.request.user
         return resolve_url('manager-datasets')
+
+    def get_account_package_queryset(self):
+        return AccountPackage.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(ManagerMixin, self).get_context_data(**kwargs)
+
+        account_packages = self.get_account_package_queryset()
+
+        # Add dataset details to the context
+        account_package_serializer = AccountPackageSerializer(account_packages)
+        account_package_data = account_package_serializer.data
+
+        context['account_packages'] = account_package_data
+
+        return context
 
 
 # App
