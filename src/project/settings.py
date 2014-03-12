@@ -106,7 +106,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # ======================================================================
 
 import dj_database_url
-DATABASES = {'default': dj_database_url.config()}
+DATABASES = {'default': dj_database_url.config(default=env.get('DATABASE_URL'))}
 DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
 
@@ -115,7 +115,7 @@ DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 # ======================================================================
 
 import django_cache_url
-CACHES = {'default': django_cache_url.config()}
+CACHES = {'default': django_cache_url.config(default=env.get('CACHE_URL'))}
 
 # How long to keep api cache values. Since the api will invalidate the cache
 # automatically when appropriate, this can (and should) be set to something
