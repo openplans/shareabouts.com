@@ -166,8 +166,12 @@ uses_local_storage = (env.get('LOCAL_STORAGE', 'False').lower() == 'true')
 if uses_local_storage:
     ATTACHMENT_STORAGE = 'django.core.files.storage.FileSystemStorage'
 else:
-    # Set up AWS storage
-    pass
+    ATTACHMENT_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+    AWS_ACCESS_KEY_ID = env.get('SHAREABOUTS_AWS_KEY')
+    AWS_SECRET_ACCESS_KEY = env.get('SHAREABOUTS_AWS_SECRET')
+    AWS_STORAGE_BUCKET_NAME = env.get('SHAREABOUTS_AWS_BUCKET')
+    AWS_QUERYSTRING_AUTH = False
+    AWS_PRELOAD_METADATA = True
 
 
 # ======================================================================
