@@ -144,15 +144,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 # ======================================================================
 
-STATIC_ROOT = 'staticfiles'
-STATIC_URL = '/static/'
-
 # Check whether we should use local file system storage (default False) or AWS
 uses_local_storage = (env.get('LOCAL_STORAGE', 'False').lower() == 'true')
 if uses_local_storage:
+    STATIC_ROOT = 'staticfiles'
+    STATIC_URL = '/static/'
+
     ATTACHMENT_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
 else:
-    ATTACHMENT_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+
+    STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
+    AWS_STATIC_BUCKET_NAME = env.get('STATIC_FILES_AWS_BUCKET')
+    STATIC_URL = 'http://%s.s3.amazonaws.com/' % AWS_STATIC_BUCKET_NAME
+
+    ATTACHMENT_STORAGE = DEFAULT_FILE_STORAGE
     AWS_ACCESS_KEY_ID = env.get('SHAREABOUTS_AWS_KEY')
     AWS_SECRET_ACCESS_KEY = env.get('SHAREABOUTS_AWS_SECRET')
     AWS_STORAGE_BUCKET_NAME = env.get('SHAREABOUTS_AWS_BUCKET')
