@@ -170,17 +170,16 @@ if uses_local_storage:
 
 else:
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-
-    STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
-    AWS_STATIC_BUCKET_NAME = env.get('STATIC_FILES_AWS_BUCKET')
-    STATIC_URL = 'http://%s.s3.amazonaws.com/' % AWS_STATIC_BUCKET_NAME
-
-    ATTACHMENT_STORAGE = DEFAULT_FILE_STORAGE
     AWS_ACCESS_KEY_ID = env.get('SHAREABOUTS_AWS_KEY')
     AWS_SECRET_ACCESS_KEY = env.get('SHAREABOUTS_AWS_SECRET')
     AWS_STORAGE_BUCKET_NAME = env.get('SHAREABOUTS_AWS_BUCKET')
     AWS_QUERYSTRING_AUTH = False
     AWS_PRELOAD_METADATA = True
+
+    STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
+    STATIC_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
+
+    ATTACHMENT_STORAGE = DEFAULT_FILE_STORAGE
 
 
 # ======================================================================
