@@ -58,16 +58,16 @@ Plan In A Box
 <section class="plans" id="plans">
   <div class="container clearfix">
 
-    <ul class="plan-list unstyled-list plan-count-{{account_packages|length}}">
-      {% for account_package in account_packages %}
+    <ul class="plan-list unstyled-list plan-count-{{packages|length}}">
+      {% for package in packages %}
       <li class="plan">
-        <h4 class="plan-title">{{ account_package.name }}</h4>
-        <p class="plan-description">{{ account_package.description }}</p>
+        <h4 class="plan-title">{{ package.name }}</h4>
+        <p class="plan-description">{{ package.description }}</p>
         <p class="plan-price">
-          {% if account_package.price == 0 %}
+          {% if package.price == 0 %}
           <span class="price">Free</span>
           {% else %}
-          <span class="unit">$</span><span class="price">{{ account_package.price }}</span><small class="frequency">/month</small>
+          <span class="unit">$</span><span class="price">{{ package.price }}</span><small class="frequency">/month</small>
           {% endif %}
         </p>
         <a href="#" class="plan-link">Choose</a>

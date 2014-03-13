@@ -35,4 +35,4 @@ class CCInformationSerializer (serializers.Serializer):
 
 
 class UserAccountPackageSerializer (serializers.Serializer):
-    account_package = serializers.SlugRelatedField(slug_field='slug')
+    package = serializers.SlugRelatedField(slug_field='slug')

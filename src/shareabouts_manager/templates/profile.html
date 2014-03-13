@@ -17,15 +17,15 @@
       <p><input required type="text" name="affiliation" id="affiliation" class="input-block" placeholder="Organizational Affiliation" max="256" tabindex="4" value="{{ profile.affiliation|default_if_none:'' }}"> <label for="affiliation" class="float-label"><strong>Organizational Affiliation</strong></label></p>
 
       <p class="clearfix">
-        {% for account_package in account_packages %}
-        <input class="radio-btn is-visuallyhidden" type="radio" name="package" id="plan-{{ account_package.slug }}" value="{{ account_package.slug }}"{% if profile.package.slug == account_package.slug %} checked="checked"{% endif %} />
-        <label for="plan-{{ account_package.slug }}" class="plan-btn">
-          <strong class="plan-title">{{ account_package.name }}</strong>
+        {% for package in packages %}
+        <input class="radio-btn is-visuallyhidden" type="radio" name="package" id="plan-{{ package.slug }}" value="{{ package.slug }}"{% if profile.package.slug == package.slug %} checked="checked"{% endif %} />
+        <label for="plan-{{ package.slug }}" class="plan-btn">
+          <strong class="plan-title">{{ package.name }}</strong>
           <span class="plan-price">
-            {% if account_package.price == 0 %}
+            {% if package.price == 0 %}
             (<span class="price">Free</span>)
             {% else %}
-            (<span class="unit">$</span><span class="price">{{ account_package.price }}</span><small class="frequency">/month</small>)
+            (<span class="unit">$</span><span class="price">{{ package.price }}</span><small class="frequency">/month</small>)
             {% endif %}
           </span>
         </label>

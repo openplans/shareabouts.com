@@ -43,20 +43,20 @@ class ManagerMixin (SSLRequired):
         else:
             return None
 
-    def get_account_package_queryset(self):
+    def get_package_queryset(self):
         return AccountPackage.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super(ManagerMixin, self).get_context_data(**kwargs)
 
-        account_packages = self.get_account_package_queryset()
+        packages = self.get_package_queryset()
         profile = self.get_profile()
 
         # Add dataset details to the context
-        account_package_serializer = AccountPackageSerializer(account_packages)
-        account_package_data = account_package_serializer.data
+        package_serializer = AccountPackageSerializer(packages)
+        package_data = package_serializer.data
 
-        context['account_packages'] = account_package_data
+        context['packages'] = package_data
         context['profile'] = profile
 
         return context
