@@ -621,6 +621,9 @@ a.logout-link {
   text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
   margin: 0;
 }
+.plan-price .unit + .price {
+  letter-spacing: -0.04em;
+}
 .plan-price .unit {
   position: relative; 
   top: -0.25em; 
