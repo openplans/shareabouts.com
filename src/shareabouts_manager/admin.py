@@ -4,7 +4,7 @@ from shareabouts_manager.models import UserProfile, AccountOverrides, AccountPac
 
 
 class AccountPackageAdmin (admin.ModelAdmin):
-    pass
+    prepopulated_fields = {"slug": ("name",)}
 
 
 class PackageOverridesInline (admin.StackedInline):

@@ -36,7 +36,7 @@ class _BaseAccountProperties (models.Model):
 @python_2_unicode_compatible
 class AccountPackage (_TimeStampedModel, _BaseAccountProperties):
     name = models.CharField(max_length=50)
-    # slug = models.SlugField(max_length=50)
+    slug = models.SlugField(max_length=50, unique=True)
     description = models.TextField(blank=True)
     price = models.DecimalField(decimal_places=0, max_digits=10)
     stripe_id = models.CharField(max_length=50, blank=True)
