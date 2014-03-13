@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from datetime import datetime
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -35,6 +36,7 @@ class _BaseAccountProperties (models.Model):
 @python_2_unicode_compatible
 class AccountPackage (_TimeStampedModel, _BaseAccountProperties):
     name = models.CharField(max_length=50)
+    # slug = models.SlugField(max_length=50)
     description = models.TextField(blank=True)
     price = models.DecimalField(decimal_places=0, max_digits=10)
     stripe_id = models.CharField(max_length=50, blank=True)
@@ -62,6 +64,31 @@ class UserProfile (_TimeStampedModel):
 
     def __str__(self):
         return self.fullname
+
+    @property
+    def credit_card(self):
+        try: return self.credit_cards.all()[0]
+        except IndexError: raise CreditCard.DoesNotExist()
+
+
+class CreditCard (_TimeStampedModel):
+    profile = models.ForeignKey(UserProfile, related_name='credit_cards')
+    type = models.CharField(_('Type of credit card'), max_length=30)
+    four = models.CharField(_('Last four digits'), max_length=4)
+    exp = models.DateField(_('Expiration month'), max_length=5)
+
+    def set_info(self, cc_type, cc_four, cc_exp):
+        if isinstance(cc_exp, basestring):
+            try:
+                # 2-digit year?
+                cc_exp = datetime.strptime(cc_exp, '%m/%y').date()
+            except ValueError:
+                # 4-digit year?
+                cc_exp = datetime.strptime(cc_exp, '%m/%Y').date()
+
+        self.type = cc_type
+        self.four = cc_four
+        self.exp = cc_exp
 
 
 class AccountOverrides (_BaseAccountProperties):
