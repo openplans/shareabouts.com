@@ -12,7 +12,7 @@ from sa_api_v2.models import DataSet
 from sa_api_v2.serializers import DataSetSerializer
 from shareabouts_manager.decorators import ssl_required
 from shareabouts_manager.forms import UserCreationForm
-from shareabouts_manager.models import AccountPackage
+from shareabouts_manager.models import AccountPackage, UserProfile
 from shareabouts_manager.serializers import AccountPackageSerializer
 
 
@@ -34,6 +34,15 @@ class ManagerMixin (SSLRequired):
             auth = self.request.user
         return resolve_url('manager-datasets')
 
+    def get_profile(self):
+        if self.request.user.is_authenticated():
+            try:
+                return self.request.user.profile
+            except UserProfile.DoesNotExist:
+                return None
+        else:
+            return None
+
     def get_account_package_queryset(self):
         return AccountPackage.objects.all()
 
@@ -41,12 +50,14 @@ class ManagerMixin (SSLRequired):
         context = super(ManagerMixin, self).get_context_data(**kwargs)
 
         account_packages = self.get_account_package_queryset()
+        profile = self.get_profile()
 
         # Add dataset details to the context
         account_package_serializer = AccountPackageSerializer(account_packages)
         account_package_data = account_package_serializer.data
 
         context['account_packages'] = account_package_data
+        context['profile'] = profile
 
         return context
 

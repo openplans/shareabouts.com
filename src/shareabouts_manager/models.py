@@ -56,6 +56,7 @@ class UserProfile (_TimeStampedModel):
     """
     auth = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='profile', null=True, blank=True, on_delete=models.CASCADE)
     fullname = models.CharField(_('Full name'), max_length=128, blank=True, help_text=_('The full name of the person or organization'))
+    email = models.EmailField(_('Email address'), blank=True)
     affiliation = models.CharField(max_length=256, blank=True, default='')
     stripe_id = models.CharField(max_length=50, blank=True)
 

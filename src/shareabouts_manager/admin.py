@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import ugettext as _
-from shareabouts_manager.models import UserProfile, AccountOverrides, AccountPackage
+from shareabouts_manager.models import UserProfile, AccountOverrides, AccountPackage, CreditCard
 
 
 class AccountPackageAdmin (admin.ModelAdmin):
@@ -11,20 +11,20 @@ class PackageOverridesInline (admin.StackedInline):
     model = AccountOverrides
 
 
+class CreditCardInline (admin.StackedInline):
+    model = CreditCard
+    extra = 0
+
+
 class UserProfileAdmin (admin.ModelAdmin):
-    list_display = ('__str__', '_date_joined', 'affiliation', '_email')
+    list_display = ('__str__', '_date_joined', 'affiliation', 'email')
     raw_id_fields = ('auth', 'package')
-    inlines = [PackageOverridesInline]
+    inlines = [PackageOverridesInline, CreditCardInline]
 
     def _date_joined(self, obj):
         return obj.created_at
     _date_joined.short_description = _('Date joined')
     _date_joined.admin_order_field = 'created_at'
-
-    def _email(self, obj):
-        return obj.auth.email
-    _email.short_description = _('Email address')
-    _email.admin_order_field = 'auth__email'
 
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(AccountPackage, AccountPackageAdmin)

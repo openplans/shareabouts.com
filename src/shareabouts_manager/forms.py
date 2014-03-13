@@ -39,8 +39,8 @@ class UserCreationForm(forms.ModelForm):
         # credentials.
         email = self.cleaned_data["email"]
         try:
-            UserAuth._default_manager.get(email__iexact=email)
-        except UserAuth.DoesNotExist:
+            UserProfile._default_manager.get(email__iexact=email)
+        except UserProfile.DoesNotExist:
             return email
 
         error_template = get_template(self.error_message_templates['duplicate_email'])
@@ -70,6 +70,7 @@ class UserCreationForm(forms.ModelForm):
         if commit:
             auth.save()
             auth.profile = UserProfile(package=None)
+            auth.profile.email = self.cleaned_data["email"]
             auth.profile.affiliation = self.cleaned_data["affiliation"]
             auth.profile.save()
 

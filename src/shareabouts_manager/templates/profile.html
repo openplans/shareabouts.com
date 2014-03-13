@@ -12,28 +12,24 @@
     <form method="POST">
       {% csrf_token %}
 
-      <p><input required type="email" name="email" id="my-email" class="input-block" placeholder="email@example.org" tabindex="1" value="{{ form.email.value|default_if_none:'' }}"> <label for="my-email" class="float-label"><strong>Email</strong></label></p>
+      <p><input required type="email" name="email" id="email-address" class="input-block" placeholder="email@example.org" tabindex="1" value="{{ profile.email|default_if_none:'' }}"> <label for="my-email" class="float-label"><strong>Email</strong></label></p>
 
-      <p><input required type="text" name="affiliation" id="my-affiliation" class="input-block" placeholder="Organizational Affiliation" max="256" tabindex="4" value="{{ form.affiliation.value|default_if_none:'' }}"> <label for="my-affiliation" class="float-label"><strong>Organizational Affiliation</strong></label></p>
+      <p><input required type="text" name="affiliation" id="affiliation" class="input-block" placeholder="Organizational Affiliation" max="256" tabindex="4" value="{{ profile.affiliation|default_if_none:'' }}"> <label for="affiliation" class="float-label"><strong>Organizational Affiliation</strong></label></p>
 
       <p class="clearfix">
-        <input class="radio-btn is-visuallyhidden" type="radio" name="myplan" id="plan1" value="plan1" checked="checked" />
-        <label for="plan1" class="plan-btn is-selected">
-          <strong class="plan-title">Basic</strong>
-          <span class="plan-price">(<span class="unit"></span><span class="price">Free</span><small class="frequency"></small>)</span>
+        {% for account_package in account_packages %}
+        <input class="radio-btn is-visuallyhidden" type="radio" name="package" id="plan-{{ account_package.slug }}" value="{{ account_package.slug }}"{% if profile.package.slug == account_package.slug %} checked="checked"{% endif %} />
+        <label for="plan-{{ account_package.slug }}" class="plan-btn">
+          <strong class="plan-title">{{ account_package.name }}</strong>
+          <span class="plan-price">
+            {% if account_package.price == 0 %}
+            (<span class="price">Free</span>)
+            {% else %}
+            (<span class="unit">$</span><span class="price">{{ account_package.price }}</span><small class="frequency">/month</small>)
+            {% endif %}
+          </span>
         </label>
-
-        <input class="radio-btn is-visuallyhidden" type="radio" name="myplan" id="plan2" value="plan2" />
-        <label for="plan2" class="plan-btn">
-          <strong class="plan-title">Pro</strong>
-          <span class="plan-price">(<span class="unit">$</span><span class="price">99</span><small class="frequency">/month</small>)</span>
-        </label>
-
-        <input class="radio-btn is-visuallyhidden" type="radio" name="myplan" id="plan3" value="plan3" />
-        <label for="plan3" class="plan-btn">
-          <strong class="plan-title">Woah!</strong>
-          <span class="plan-price">(<span class="unit">$</span><span class="price">9999</span><small class="frequency">/month</small>)</span>
-        </label>
+        {% endfor %}
       </p>       
 
       <p><input type="submit" value="Update Account" class="btn btn-large" tabindex="4"></p>
@@ -42,7 +38,11 @@
     <hr>
 
     <h3>Payment Method</h3>
-    <p class="payment-method"><span class="card-number">**** **** **** 1234</span> <span class="card-type">VISA</span> <a href="#" class="btn btn-small">Change</a></p>
+    {% if profile.credit_card %}
+    <p class="payment-method"><span class="card-number">**** **** **** {{ profile.credit_card.four }}</span> <span class="card-type">{{ profile.credit_card.type }}</span> <a href="#" class="btn btn-small">Change</a></p>
+    {% else %}
+    <p class="payment-method"><a href="#" class="btn btn-small">Add a Credit Card</a></p>
+    {% endif %}
 
   </div>
 </section>
