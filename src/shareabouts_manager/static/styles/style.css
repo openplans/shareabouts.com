@@ -132,7 +132,7 @@ img {
 }
 .btn-large {
   font-size: 1.25em;
-  padding: 0.75em 1em 0.5em;
+  padding: 0.5em 1em;
 }
 .btn-small {
   font-size: 0.75em;
@@ -226,7 +226,7 @@ label.float-label {
        -o-transition: height 0.1s ease, opacity 0.5s ease;
           transition: height 0.1s ease, opacity 0.5s ease;
 }
-input:focus + label {
+input:focus + .float-label {
   visibility: visible;
   opacity: 1;
   height: 1.5em;
@@ -249,6 +249,45 @@ textarea:focus {
 textarea {
   height: 6.5em;
   resize: none;
+}
+
+.radio-btn + label {
+  color: #fff;
+  background: #aaa;
+  cursor: pointer;
+  display: block;
+  padding: 0.125em 0.75em 0.125em 1.75em;
+  position: relative;
+  border-radius: 0.375em;
+}
+label + .radio-btn + label {
+  margin-top: 0.5em;
+}
+.radio-btn:checked + label,
+.radio-btn + label.is-selected {
+  background: #ddd;
+  color: #666;
+  text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+}
+.radio-btn + label:before {
+  content: "";
+  position: absolute;
+  top: 0.375em;
+  left: 0.375em;
+  width: 1em;
+  height: 1em;
+  background: #eee;
+  background: rgba(255,255,255,0.9);
+  border-radius: 0.25em;
+}
+.radio-btn:checked + label:after,
+.radio-btn + label.is-selected:after {
+  content: "\2714";
+  position: absolute;
+  top: -0.25em;
+  left: 0.375em;
+  font-size: 1.5em;
+  color: LimeGreen;
 }
 
 /* Alerts*/
@@ -612,6 +651,37 @@ a.logout-link {
 }
 
 
+/* =Plan Radio Buttons
+-------------------------------------------------------------- */
+
+.plan-btn {
+  font-size: 1.5em;
+}
+.plan-btn .plan-title {
+  font-size: 1em;
+  text-shadow: inherit;
+}
+.plan-btn .plan-price {
+  color: inherit;
+  font-size: 0.875em;
+  font-weight: 100;
+  text-shadow: inherit;
+}
+
+
+/* =Manager
+-------------------------------------------------------------- */
+
+.payment-method {}
+.card-type {
+  margin: 0 0.375em;
+  font-weight: bold;
+}
+.card-number {
+  font-family: 'Andale Mono', 'Consolas', monospace;
+}
+
+
 /* =Manager
 -------------------------------------------------------------- */
 
@@ -877,6 +947,22 @@ a.logout-link {
   }
   .plan-count-4 .plan:first-child {
     margin-left: -4em;
+  }
+
+  .plan-btn {
+    float: left;
+  }
+  .plan-btn + .radio-btn + .plan-btn {
+    margin-top: 0em;
+    margin-left: 0.375em;
+  }
+  .plan-btn .plan-title {
+    display: block;
+  }
+  .plan-btn .plan-price {
+    display: block;
+    font-size: 0.75em;
+    margin-top: -0.5em;
   }
 }
 
