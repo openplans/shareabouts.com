@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
 
+from django.utils.translation import ugettext as _
 from rest_framework import serializers
-from shareabouts_manager.models import AccountPackage
+from shareabouts_manager.models import AccountPackage, UserProfile
 from shareabouts_manager.tasks import create_customer, add_user_credit_card
 
 
@@ -34,5 +35,23 @@ class CCInformationSerializer (serializers.Serializer):
         return None
 
 
-class UserAccountPackageSerializer (serializers.Serializer):
-    package = serializers.SlugRelatedField(slug_field='slug')
+class UserProfileSerializer (serializers.ModelSerializer):
+    package = serializers.SlugRelatedField(slug_field='slug', required=False)
+
+    class Meta:
+        model = UserProfile
+
+    def __init__(self, profile, *args, **kwargs):
+        self.profile = profile
+        kwargs['instance'] = profile
+        kwargs.setdefault('partial', True)
+        super(UserProfileSerializer, self).__init__(*args, **kwargs)
+
+    def validate_package(self, attrs, source):
+        package = attrs['package']
+        if package.price > 0:
+            # If we're settings a price, then we have to check to make sure the
+            # user we're setting it for has a stripe_id.
+            if self.profile.stripe_id == '':
+                raise serializers.ValidationError(_('Please set your payment information before upgrading your plan.'))
+        return attrs
