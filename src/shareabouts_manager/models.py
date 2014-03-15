@@ -66,6 +66,9 @@ class UserProfile (_TimeStampedModel):
     def __str__(self):
         return self.fullname
 
+    def can_pay(self):
+        return self.stripe_id not in (None, '')
+
     @property
     def credit_card(self):
         try: return self.credit_cards.all()[0]

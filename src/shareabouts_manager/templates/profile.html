@@ -18,7 +18,7 @@
 
       <p class="clearfix">
         {% for package in packages %}
-        <input class="radio-btn is-visuallyhidden" type="radio" name="package" id="plan-{{ package.slug }}" value="{{ package.slug }}"{% if profile.package.slug == package.slug %} checked="checked"{% endif %} />
+        <input class="radio-btn is-visuallyhidden" type="radio" name="package" id="plan-{{ package.slug }}" value="{{ package.slug }}"{% if profile.package.slug == package.slug %} checked="checked"{% endif %}{% if not profile.can_pay and package.price > 0 %}disabled="disabled" {% endif %} />
         <label for="plan-{{ package.slug }}" class="plan-btn">
           <strong class="plan-title">{{ package.name }}</strong>
           <span class="plan-price">
@@ -30,7 +30,13 @@
           </span>
         </label>
         {% endfor %}
-      </p>       
+      </p>  
+
+      <p>
+        {% if not profile.can_pay %}
+        Please enter payment information below to upgrade your plan.
+        {% endif %}
+      </p>     
 
       <p><input type="submit" value="Update Account" class="btn btn-large" tabindex="4"></p>
     </form>
@@ -39,12 +45,40 @@
 
     <h3>Payment Method</h3>
     {% if profile.credit_card %}
-    <p class="payment-method"><span class="card-number">**** **** **** {{ profile.credit_card.four }}</span> <span class="card-type">{{ profile.credit_card.type }}</span> <a href="#" class="btn btn-small">Change</a></p>
+    <p class="payment-method"><span class="card-number">**** **** **** {{ profile.credit_card.four }}</span> <span class="card-type">{{ profile.credit_card.type }}</span> <button id="set-credit-card" class="btn btn-small">Change</button></p>
     {% else %}
-    <p class="payment-method"><a href="#" class="btn btn-small">Add a Credit Card</a></p>
+    <p class="payment-method"><button id="set-credit-card" class="btn btn-small">Add a Credit Card</button></p>
     {% endif %}
 
   </div>
 </section>
 
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://checkout.stripe.com/checkout.js"></script>
+
+  <script>
+    var stripeHandler = StripeCheckout.configure({
+      key: '{{ settings.STRIPE_PUBLIC_KEY }}',
+      token: function(token, args) {
+        // Use the token to create the charge with a server-side script.
+        // You can access the token ID with `token.id`
+      }
+    });
+
+    document.getElementById('set-credit-card').addEventListener('click', function(e) {
+      stripeHandler.open({
+        name: 'Shareabouts',
+        description: '...',
+        amount: 2000
+      });
+      e.preventDefault();
+    });
+  </script>
+
+  <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+  <script>
+    Stripe.setPublishableKey('{{ settings.STRIPE_PUBLIC_KEY }}');
+  </script>
 {% endblock %}
