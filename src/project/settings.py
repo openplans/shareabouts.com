@@ -161,7 +161,16 @@ else:
 # ======================================================================
 # Django Rest Framework
 # ======================================================================
+
 REST_FRAMEWORK = {
     'PAGINATE_BY': 100,
     'PAGINATE_BY_PARAM': 'page_size'
 }
+
+
+# ======================================================================
+# Payment Processing
+# ======================================================================
+
+STRIPE_SECRET_KEY = env.get('STRIPE_SECRET_KEY')
+STRIPE_PUBLIC_KEY = env.get('STRIPE_PUBLIC_KEY')
