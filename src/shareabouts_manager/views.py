@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.core.urlresolvers import reverse
 from django.shortcuts import resolve_url
 from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
@@ -12,7 +13,7 @@ from sa_api_v2.models import DataSet
 from sa_api_v2.serializers import DataSetSerializer
 from shareabouts_manager.decorators import ssl_required
 from shareabouts_manager.forms import UserCreationForm
-from shareabouts_manager.mixins import ValidateInputView
+from shareabouts_manager.mixins import ValidateInputMixin
 from shareabouts_manager.models import AccountPackage, UserProfile
 from shareabouts_manager.serializers import AccountPackageSerializer, UserProfileSerializer
 
@@ -141,19 +142,19 @@ class DataSetsView (ManagerMixin, LoginRequired, SSLRequired, TemplateView):
         return context
 
 
-class ProfileView (ManagerMixin, LoginRequired, SSLRequired, ValidateInputView, TemplateView):
+class ProfileView (ManagerMixin, LoginRequired, SSLRequired, ValidateInputMixin, TemplateView):
     template_name = 'profile.html'
     validator_class = UserProfileSerializer
+
+    def get_success_url(self):
+        return reverse('manager-profile')
 
     def get_validator_args(self):
         return (self.request.user.profile,)
 
     def on_valid(self, validator):
         validator.save()
-        return self.render_to_json_response(validator.data)
-
-    def on_invalid(self, validator):
-        return self.render_to_json_response(validator.errors, status=400)
+        return super(ProfileView, self).on_valid(validator)
 
     def get_context_data(self, **kwargs):
         context = super(ProfileView, self).get_context_data(**kwargs)

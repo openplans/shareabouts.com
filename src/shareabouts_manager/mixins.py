@@ -1,10 +1,11 @@
 import json
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
+from django.views.generic.edit import FormMixin
 from rest_framework.utils.encoders import JSONEncoder
 
 
-class ValidateInputView (View):
+class ValidateInputMixin (FormMixin):
     """
     A different take on django.views.generic.ProcessFormView that will take
     any kind of validator that has a similar interface to Django's forms.
@@ -30,10 +31,16 @@ class ValidateInputView (View):
         return kwargs
 
     def on_valid(self, validator):
-        raise NotImplementedError
+        if self.request.is_ajax():
+            return self.render_to_json_response(validator.data)
+        else:
+            return HttpResponseRedirect(self.get_success_url())
 
     def on_invalid(self, validator):
-        raise NotImplementedError
+        if self.request.is_ajax():
+            return self.render_to_json_response(validator.errors, status=400)
+        else:
+            return self.render_to_response(self.get_context_data(validator=validator))
 
     def render_to_json_response(self, context, **response_kwargs):
         data = json.dumps(context, cls=JSONEncoder)
