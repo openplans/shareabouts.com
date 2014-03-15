@@ -40,6 +40,7 @@ class UserProfileSerializer (serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
+        exclude = ('auth', 'stripe_id', 'id')
 
     def __init__(self, profile, *args, **kwargs):
         self.profile = profile
