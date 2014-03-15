@@ -107,6 +107,10 @@ import dj_database_url
 DATABASES = {'default': dj_database_url.config()}
 DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
+postgis_version_string = env.get('POSTGIS_VERSION', None)
+if postgis_version_string:
+    POSTGIS_VERSION = tuple(int(v) for v in postgis_version_string.split('.'))
+
 
 # ======================================================================
 # Cache
