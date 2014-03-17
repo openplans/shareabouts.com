@@ -17,12 +17,12 @@
       <p><input required type="text" name="affiliation" id="affiliation" class="input-block" placeholder="Organizational Affiliation" max="256" tabindex="4" value="{{ profile.affiliation|default_if_none:'' }}"> <label for="affiliation" class="float-label"><strong>Organizational Affiliation</strong></label></p>
 
       {% if not profile.can_pay %}
-      <strong>Please enter payment information below to upgrade your plan.</strong>
+      <strong>To upgrade your plan, please enter payment information below.</strong>
       {% endif %}
       <p class="clearfix">
         {% for package in packages %}
-        <input class="radio-btn is-visuallyhidden" type="radio" name="package" id="plan-{{ package.slug }}" value="{{ package.slug }}"{% if profile.package.slug == package.slug %} checked="checked"{% endif %}{% if not profile.can_pay and package.price > 0 %}disabled="disabled" {% endif %} />
-        <label for="plan-{{ package.slug }}" class="plan-btn">
+        <input class="radio-btn is-visuallyhidden" type="radio" name="package" id="plan-{{ package.slug }}" value="{{ package.slug }}"{% if profile.package.slug == package.slug %} checked="checked"{% endif %}{% if not profile.can_pay and package.price > 0 %} disabled="disabled"{% endif %} />
+        <label for="plan-{{ package.slug }}" class="plan-btn{% if not profile.can_pay and package.price > 0 %} plan-disabled{% endif %}">
           <strong class="plan-title">{{ package.name }}</strong>
           <span class="plan-price">
             {% if package.price == 0 %}
