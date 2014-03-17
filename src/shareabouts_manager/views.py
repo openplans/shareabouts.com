@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from celery.result import AsyncResult
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -15,7 +16,7 @@ from shareabouts_manager.decorators import ssl_required
 from shareabouts_manager.forms import UserCreationForm
 from shareabouts_manager.mixins import ValidateInputMixin, JSONResponseMixin
 from shareabouts_manager.models import AccountPackage, UserProfile
-from shareabouts_manager.serializers import AccountPackageSerializer, UserProfileSerializer, CCInformationSerializer
+from shareabouts_manager.serializers import AccountPackageSerializer, UserProfileSerializer, CCInformationSerializer, AsyncTaskSerializer
 
 
 class LoginRequired (object):
@@ -177,18 +178,9 @@ class SetCardInfoView (ManagerMixin, LoginRequired, SSLRequired, ValidateInputMi
 
 class TaskStatusView (SSLRequired, JSONResponseMixin, View):
     def get(self, request, task_id):
-        from celery.result import AsyncResult
         result = AsyncResult(task_id)
-        details = ''
-
-        if result.state == 'FAILURE':
-            details = str(result.info).split(':')[0]
-
-        return self.render_to_json_response({
-            'status': result.state.lower(),
-            'task': task_id,
-            'details': details,
-        })
+        serializer = AsyncTaskSerializer(result)
+        return self.render_to_json_response(serializer.data)
 
 
 class IndexView (ManagerMixin, SSLRequired, TemplateView):

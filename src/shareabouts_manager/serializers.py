@@ -35,9 +35,25 @@ class CCInformationSerializer (serializers.Serializer):
         self.task = save_cc(profile.pk, stripe_token, cc_type, cc_four, cc_exp)
 
     def to_native(self, obj):
+        task_serializer = AsyncTaskSerializer(self.task)
+        return task_serializer.data
+
+
+class AsyncTaskSerializer (serializers.Serializer):
+    def __init__(self, task_result, *args, **kwargs):
+        self.task = task_result
+        kwargs['instance'] = task_result
+        super(AsyncTaskSerializer, self).__init__(*args, **kwargs)
+
+    def to_native(self, obj):
+        details = ''
+        if obj.state == 'FAILURE':
+            details = str(obj.info).split(':')[0]
+
         return {
-            'status': self.task.state.lower(),
-            'task': self.task.id,
+            'status': obj.state.lower(),
+            'task': obj.id,
+            'details': details,
         }
 
 
