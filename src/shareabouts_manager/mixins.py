@@ -18,8 +18,8 @@ class ValidateInputMixin (FormMixin):
     def get_validator(self, validator_class):
         return validator_class(*self.get_validator_args(), **self.get_validator_kwargs())
 
-	def get_validator_args(self):
-		return ()
+    def get_validator_args(self):
+        return ()
 
     def get_validator_kwargs(self):
         kwargs = {}
