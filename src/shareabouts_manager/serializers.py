@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from shareabouts_manager.models import AccountPackage, UserProfile
-from shareabouts_manager.tasks import create_customer, add_user_credit_card
+from shareabouts_manager.tasks import create_customer, update_customer, add_user_credit_card
 
 
 class AccountPackageSerializer (serializers.ModelSerializer):
@@ -19,20 +19,28 @@ class CCInformationSerializer (serializers.Serializer):
     stripe_token = serializers.CharField()
 
     def save(self, profile):
-        cc_four = self.data['cc_four']
-        cc_exp = self.data['cc_exp']
-        cc_type = self.data['c_type']
+        stripe_token = self.init_data['stripe_token']
+        cc_four = self.init_data['cc_four']
+        cc_exp = self.init_data['cc_exp']
+        cc_type = self.init_data['cc_type']
 
         # Check whether current user has a customer_id
-        if profile.customer_id is None:
-            chain = (create_customer.s(profile.pk) |
-                     add_user_credit_card.s(cc_four, cc_exp, cc_type))
-            chain()
+        if profile.stripe_id is None:
+            # If there is no customer ID, then schedule one to be created, and
+            # then add the credit card once that's done.
+            save_cc = (create_customer.s(profile.pk, stripe_token) |
+                       add_user_credit_card.s(cc_four, cc_exp, cc_type))
         else:
-            add_user_credit_card(profile, cc_four, cc_exp, cc_type)
+            # If there is already a customer ID, then we just have to update
+            save_cc = (update_customer.s(profile.pk, stripe_token) |
+                       add_user_credit_card.s(cc_four, cc_exp, cc_type))
+        self.task_id = save_cc().id
 
     def to_native(self, obj):
-        return None
+        return {
+            'status': 'pending',
+            'task': self.task_id,
+        }
 
 
 class UserProfileSerializer (serializers.ModelSerializer):
