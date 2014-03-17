@@ -193,7 +193,7 @@ STRIPE_PUBLIC_KEY = env.get('STRIPE_PUBLIC_KEY')
 # ======================================================================
 
 BROKER_URL = env.get('CELERY_BROKER_URL')
-CELERY_RESULT_BACKEND='djcelery.backends.cache:CacheBackend'
+CELERY_RESULT_BACKEND = 'djcelery.backends.cache:CacheBackend'
 if BROKER_URL == 'django://':
     INSTALLED_APPS += ('djcelery', 'kombu.transport.django',)
-    CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
+    CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
