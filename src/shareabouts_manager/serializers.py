@@ -38,7 +38,7 @@ class CCInformationSerializer (serializers.Serializer):
 
     def to_native(self, obj):
         return {
-            'status': 'pending',
+            'status': self.task.state.lower(),
             'task': self.task.id,
         }
 
