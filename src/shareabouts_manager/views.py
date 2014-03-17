@@ -46,7 +46,7 @@ class ManagerMixin (SSLRequired):
             return None
 
     def get_package_queryset(self):
-        return AccountPackage.objects.all()
+        return AccountPackage.objects.all().order_by('price')
 
     def get_context_data(self, **kwargs):
         context = super(ManagerMixin, self).get_context_data(**kwargs)
