@@ -486,7 +486,7 @@ html, body {
   color: #48a5bf;
   text-decoration: none;
 }
-.manager { 
+.manager {
   font-family: 'Alegreya Sans', sans-serif;
   font-weight: 100;
   font-size: 0.875em;
@@ -494,7 +494,7 @@ html, body {
   margin-left: -0.25em;
   color: #ff8b38;
 }
-.manager-title .manager { 
+.manager-title .manager {
   color: #ffb885;
 }
 
@@ -639,8 +639,8 @@ a.logout-link {
   letter-spacing: -0.04em;
 }
 .plan-price .unit {
-  position: relative; 
-  top: -0.25em; 
+  position: relative;
+  top: -0.25em;
   font-size: 0.625em;
   font-weight: 400;
 }
@@ -863,7 +863,13 @@ a.logout-link {
   position: relative;
   top: 0.375em;
 }
-.modal-body {  
+.modal-body {
+}
+
+/* =Profile
+-------------------------------------------------------------- */
+.credit-card-save-status {
+  float: right;
 }
 
 

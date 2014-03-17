@@ -16,6 +16,9 @@
 
       <p><input required type="text" name="affiliation" id="affiliation" class="input-block" placeholder="Organizational Affiliation" max="256" tabindex="4" value="{{ profile.affiliation|default_if_none:'' }}"> <label for="affiliation" class="float-label"><strong>Organizational Affiliation</strong></label></p>
 
+      {% if not profile.can_pay %}
+      <strong>Please enter payment information below to upgrade your plan.</strong>
+      {% endif %}
       <p class="clearfix">
         {% for package in packages %}
         <input class="radio-btn is-visuallyhidden" type="radio" name="package" id="plan-{{ package.slug }}" value="{{ package.slug }}"{% if profile.package.slug == package.slug %} checked="checked"{% endif %}{% if not profile.can_pay and package.price > 0 %}disabled="disabled" {% endif %} />
@@ -30,19 +33,15 @@
           </span>
         </label>
         {% endfor %}
-      </p>  
-
-      {% if not profile.can_pay %}
-      <p>Please enter payment information below to upgrade your plan.</p>
-      {% endif %}
+      </p>
 
       <p><input type="submit" value="Update Account" class="btn btn-large" tabindex="4"></p>
     </form>
 
     <hr>
 
-    <h3>Payment Method</h3>
-    
+    <h3>Payment Information</h3>
+
     <form action="{% url 'manager-set-card-info' %}" method="POST" id="payment-form" class="is-hidden">
       <span class="payment-errors"></span>
 
@@ -52,7 +51,7 @@
         <div style="position: relative; display: inline-block;">
           <input required type="text" size="4" id="credit-card-month" class="input-float" pattern="\d*" placeholder="MM"> <label for="credit-card-month" class="float-label"><strong>Month</strong></label>
         </div>
-         / 
+         /
         <div style="position: relative; display: inline-block;">
           <input required type="text" size="4" id="credit-card-year" class="input-float" pattern="\d*" placeholder="YYYY"> <label for="credit-card-year" class="float-label"><strong>Year</strong></label>
         </div>
@@ -65,16 +64,17 @@
       </div>
 
       <p class="credit-card-actions">
-        <button type="submit" class="btn btn-small">Save Card</button>
+        <button id="credit-card-submit" type="submit" class="btn btn-small">Save Card</button>
         <a href="#" id="cancel-set-credit-card">Cancel</a>
+        <span class="credit-card-save-status is-hidden"><span class="spinner"></span> Saving...</span>
       </p>
     </form>
 
     <div id="current-payment-info">
       {% if profile.credit_card %}
-      <p class="payment-method"><span class="card-number">**** **** **** {{ profile.credit_card.four }}</span> <span class="card-type">{{ profile.credit_card.type }}</span> <button id="set-credit-card" class="btn btn-small">Change</button></p>
+      <p class="payment-method"><span class="card-number">**** **** **** {{ profile.credit_card.four }}</span> <span class="card-type">{{ profile.credit_card.type }}</span> <button class="btn btn-small set-credit-card">Change</button></p>
       {% else %}
-      <p class="payment-method"><button id="set-credit-card" class="btn btn-small">Add a Credit Card</button></p>
+      <p class="payment-method"><button class="btn btn-small set-credit-card">Add a Credit Card</button></p>
       {% endif %}
     </div>
 
@@ -86,6 +86,7 @@
 {% block scripts %}
   {% if debug %}
   <script src="{{ STATIC_URL }}bower_components/jquery/jquery.js"></script>
+  <script src="{{ STATIC_URL }}bower_components/spin.js/spin.js"></script>
 
   <script src="{{ STATIC_URL }}bower_components/handlebars/handlebars.js"></script>
   <script src="{{ STATIC_URL }}bower_components/underscore/underscore.js"></script>
@@ -103,7 +104,9 @@
     Stripe.setPublishableKey('{{ settings.STRIPE_PUBLIC_KEY }}');
 
     $(function() {
-      $('#set-credit-card').on('click', function(evt) {
+      var $ccSubmit = $('#credit-card-submit');
+
+      $(document).on('click', '.set-credit-card', function(evt) {
         evt.preventDefault();
 
         $('#payment-form').removeClass('is-hidden');
@@ -112,9 +115,12 @@
 
       $('#cancel-set-credit-card').on('click', function(evt) {
         evt.preventDefault();
-        
+
         $('#payment-form').addClass('is-hidden');
         $('#current-payment-info').removeClass('is-hidden');
+        $('#payment-form').get(0).reset();
+        // Hide any errors
+        $('.payment-errors').text('');
       });
 
       $('#payment-form').on('submit', function(evt) {
@@ -124,6 +130,9 @@
             cvc = $('#credit-card-cvc').val(),
             exp_month = $('#credit-card-month').val(),
             exp_year = $('#credit-card-year').val();
+
+        // Disable the submit button and show spinner
+        onCreditCardUpdateStart();
 
         Stripe.card.createToken({
           number: number,
@@ -136,11 +145,106 @@
       });
     });
 
+    function checkTaskStatus(id, retries, success, error) {
+      console.log('retries', retries);
+
+      function retry() {
+        if (retries > 0) {
+          setTimeout(function() {
+            checkTaskStatus(id, retries-1, success, error);
+          }, 2500);
+        } else {
+          error();
+        }
+      }
+
+      $.ajax({
+        url: '/check-task-status/' + id,
+        success: function(resp) {
+          console.log('status', arguments);
+
+          if (resp.status === 'success') {
+            success();
+          } else if (resp.status === 'failure') {
+            error();
+          } else {
+            retry();
+          }
+        },
+        error: function() {
+          retry();
+        }
+      });
+    }
+
+    function onCreditCardUpdateStart() {
+      // Disable save button
+      $('#credit-card-submit').prop('disabled', true);
+
+      // Show spinner
+      var opts = {
+        lines: 13, // The number of lines to draw
+        length: 5, // The length of each line
+        width: 2, // The line thickness
+        radius: 6, // The radius of the inner circle
+        corners: 1, // Corner roundness (0..1)
+        rotate: 0, // The rotation offset
+        direction: 1, // 1: clockwise, -1: counterclockwise
+        color: '#000', // #rgb or #rrggbb or array of colors
+        speed: 1, // Rounds per second
+        trail: 60, // Afterglow percentage
+        shadow: false, // Whether to render a shadow
+        hwaccel: false, // Whether to use hardware acceleration
+        className: 'spinner', // The CSS class to assign to the spinner
+        zIndex: 2e9, // The z-index (defaults to 2000000000)
+        top: 'auto', // Top position relative to parent in px
+        left: 'auto' // Left position relative to parent in px
+      };
+      var spinner = new Spinner(opts).spin($('.spinner').get(0));
+
+      $('.credit-card-save-status').removeClass('is-hidden');
+    }
+
+    function onCreditCardUpdate(stripeToken) {
+      // Hide spinner
+      $('.credit-card-save-status').addClass('is-hidden');
+
+      // Enable save button
+      $('#credit-card-submit').prop('disabled', false)
+      // Hide and reset the form
+      $('#payment-form').addClass('is-hidden');
+      $('#payment-form').get(0).reset();
+      // Hide any errors
+      $('.payment-errors').text('');
+
+      // Show current CC on file (from the token)
+      $('#current-payment-info')
+        .html('<p class="payment-method"><span class="card-number">**** **** **** ' +
+          stripeToken.card.last4 + '</span> <span class="card-type">' +
+          stripeToken.card.type + '</span> <button class="btn btn-small ' +
+          'set-credit-card">Change</button></p>')
+        .removeClass('is-hidden');
+
+      // Enable all of the packages
+      $('input[name="package"]').prop('disabled', false);
+    }
+
+    function onCreditCardError(errorMsg) {
+      // Display errors
+      $('.payment-errors').text(errorMsg || '');
+      // Enable the submit button
+      $('#credit-card-submit').prop('disabled', false);
+      // Hide spinner
+      $('.credit-card-save-status').addClass('is-hidden');
+    }
+
     function stripeResponseHandler(status, response) {
+      var stripeToken = response,
+          $ccSubmit = $('#credit-card-submit');
+
       if (response.error) {
         // show the errors on the form
-        $(".payment-errors").text(response.error.message);
-
+        onCreditCardError(response.error.message);
       } else {
         var $form = $("#payment-form"),
             $token, $type, $four, $exp;
@@ -156,7 +260,7 @@
           url: $form.attr('action'),
           type: $form.attr('method'),
           dataType: 'json',
-          data: $form.serialize()
+          data: $form.serialize(),
 
           // TODO: Handle potential validation errors? Everything should be
           //       pretty safe by this point because we've already gotten a
@@ -164,10 +268,20 @@
           //       (like, our server could be down), so we'll have to handle
           //       them gracefully, at least letting the user know that they
           //       should try again later.
-
-          // TODO: On success, poll the check-task-status URL to see when and
-          //       whether all the Stripe stuff finishes successfully. Give
-          //       some feedback (like a spinner) while waiting.
+          error: function(resp) {
+            onCreditCardError('We were unable to set your credit card information. Please try again.');
+          },
+          success: function(resp) {
+            if (resp.status === 'success') {
+              onCreditCardUpdate(stripeToken);
+            } else {
+              checkTaskStatus(resp.task, 20, function() {
+                onCreditCardUpdate(stripeToken);
+              }, function() {
+                onCreditCardError('We were unable to set your credit card information. Please try again.');
+              });
+            }
+          }
         });
 
         // remove the hidden inputs, in case we submit the form again.

@@ -292,6 +292,7 @@ module.exports = function (grunt) {
         files: {
           '<%= yeoman.app %>/scripts/components.min.js': [
             '<%= yeoman.app %>/bower_components/jquery/jquery.js',
+            '<%= yeoman.app %>/bower_components/spin.js/spin.js',
             '<%= yeoman.app %>/bower_components/handlebars/handlebars.js',
             '<%= yeoman.app %>/bower_components/underscore/underscore.js',
             '<%= yeoman.app %>/bower_components/backbone/backbone.js',
