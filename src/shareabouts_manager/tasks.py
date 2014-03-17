@@ -20,7 +20,7 @@ def create_customer(profile, cc_token, cc_type, cc_four, cc_exp):
     profile.stripe_id = customer.id
     profile.save()
 
-    add_user_credit_card(cc_type, cc_four, cc_exp)
+    add_user_credit_card(profile, cc_type, cc_four, cc_exp)
 
     return profile.pk
 
@@ -39,7 +39,7 @@ def update_customer(profile, cc_token, cc_type, cc_four, cc_exp):
     customer.card = cc_token
     customer.save()
 
-    add_user_credit_card(cc_type, cc_four, cc_exp)
+    add_user_credit_card(profile, cc_type, cc_four, cc_exp)
 
     return profile.pk
 
