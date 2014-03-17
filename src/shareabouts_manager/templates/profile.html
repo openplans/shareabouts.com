@@ -164,6 +164,10 @@
           //       (like, our server could be down), so we'll have to handle
           //       them gracefully, at least letting the user know that they
           //       should try again later.
+
+          // TODO: On success, poll the check-task-status URL to see when and
+          //       whether all the Stripe stuff finishes successfully. Give
+          //       some feedback (like a spinner) while waiting.
         });
 
         // remove the hidden inputs, in case we submit the form again.
