@@ -29,7 +29,7 @@ django-storages
 # Background processing
 # ==============================
 
-django-celery==3.1.9
+celery==3.1.9
 
 
 # ==============================

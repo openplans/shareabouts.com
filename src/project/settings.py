@@ -186,3 +186,12 @@ REST_FRAMEWORK = {
 
 STRIPE_SECRET_KEY = env.get('STRIPE_SECRET_KEY')
 STRIPE_PUBLIC_KEY = env.get('STRIPE_PUBLIC_KEY')
+
+
+# ======================================================================
+# Background Task Processing
+# ======================================================================
+
+CELERY_BROKER_URL = env.get('CELERY_BROKER_URL')
+if CELERY_BROKER_URL == 'django://':
+    INSTALLED_APPS += ('kombu.transport.django',)
