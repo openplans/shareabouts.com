@@ -74,6 +74,18 @@ class UserProfile (_TimeStampedModel):
         try: return self.credit_cards.all()[0]
         except IndexError: raise CreditCard.DoesNotExist()
 
+    def add_credit_card(self, cc_type, cc_four, cc_exp):
+        # Retrieve or instantiate the credit card model
+        try:
+            cc = self.credit_card
+        except CreditCard.DoesNotExist:
+            cc = CreditCard(profile=self)
+
+        # Set and save the given credit card information.
+        cc.set_info(cc_type, cc_four, cc_exp)
+        cc.save()
+        return cc
+
 
 class CreditCard (_TimeStampedModel):
     profile = models.ForeignKey(UserProfile, related_name='credit_cards')

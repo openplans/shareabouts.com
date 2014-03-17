@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from shareabouts_manager.models import AccountPackage, UserProfile
-from shareabouts_manager.tasks import create_customer, update_customer, add_user_credit_card
+from shareabouts_manager.tasks import create_customer, update_customer
 
 
 class AccountPackageSerializer (serializers.ModelSerializer):
