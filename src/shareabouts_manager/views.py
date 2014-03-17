@@ -13,7 +13,7 @@ from sa_api_v2.models import DataSet
 from sa_api_v2.serializers import DataSetSerializer
 from shareabouts_manager.decorators import ssl_required
 from shareabouts_manager.forms import UserCreationForm
-from shareabouts_manager.mixins import ValidateInputMixin
+from shareabouts_manager.mixins import ValidateInputMixin, JSONResponseMixin
 from shareabouts_manager.models import AccountPackage, UserProfile
 from shareabouts_manager.serializers import AccountPackageSerializer, UserProfileSerializer, CCInformationSerializer
 
@@ -175,6 +175,17 @@ class SetCardInfoView (ManagerMixin, LoginRequired, SSLRequired, ValidateInputMi
         return super(SetCardInfoView, self).on_valid(validator)
 
 
+class TaskStatusView (SSLRequired, JSONResponseMixin, View):
+    def get(self, request, task_id):
+        from celery.result import AsyncResult
+        result = AsyncResult(task_id)
+
+        return self.render_to_json_response({
+            'status': result.state.lower(),
+            'task': task_id
+        })
+
+
 class IndexView (ManagerMixin, SSLRequired, TemplateView):
     template_name = 'index.html'
 
@@ -196,3 +207,4 @@ robots_view = TemplateView.as_view(template_name='robots.txt', content_type='tex
 sitemap_view = SiteMapView.as_view(content_type='text/xml')
 
 set_card_info_view = SetCardInfoView.as_view()
+task_status_view = TaskStatusView.as_view()

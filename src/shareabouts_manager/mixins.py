@@ -5,7 +5,14 @@ from django.views.generic.edit import FormMixin
 from rest_framework.utils.encoders import JSONEncoder
 
 
-class ValidateInputMixin (FormMixin):
+class JSONResponseMixin (object):
+    def render_to_json_response(self, context, **response_kwargs):
+        data = json.dumps(context, cls=JSONEncoder)
+        response_kwargs['content_type'] = 'application/json'
+        return HttpResponse(data, **response_kwargs)
+
+
+class ValidateInputMixin (JSONResponseMixin, FormMixin):
     """
     A different take on django.views.generic.ProcessFormView that will take
     any kind of validator that has a similar interface to Django's forms.
@@ -41,11 +48,6 @@ class ValidateInputMixin (FormMixin):
             return self.render_to_json_response(validator.errors, status=400)
         else:
             return self.render_to_response(self.get_context_data(validator=validator))
-
-    def render_to_json_response(self, context, **response_kwargs):
-        data = json.dumps(context, cls=JSONEncoder)
-        response_kwargs['content_type'] = 'application/json'
-        return HttpResponse(data, **response_kwargs)
 
     def post(self, request, *args, **kwargs):
         validator_class = self.get_validator_class()
