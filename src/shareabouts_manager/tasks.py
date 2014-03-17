@@ -5,7 +5,7 @@ import stripe
 
 
 @shared_task
-def create_customer(profile, cc_token, cc_type, cc_four, cc_exp):
+def create_customer(profile, cc_token=None, cc_type=None, cc_four=None, cc_exp=None):
     if isinstance(profile, (int, basestring)):
         profile = UserProfile.objects.get(pk=profile)
 
@@ -18,9 +18,10 @@ def create_customer(profile, cc_token, cc_type, cc_four, cc_exp):
     profile.stripe_id = customer.id
     profile.save()
 
-    profile.add_credit_card(cc_type, cc_four, cc_exp)
+    if cc_type and cc_four and cc_exp:
+        profile.add_credit_card(cc_type, cc_four, cc_exp)
 
-    return profile.pk
+    return customer
 
 
 @shared_task
@@ -39,7 +40,7 @@ def update_customer(profile, cc_token, cc_type, cc_four, cc_exp):
 
     profile.add_credit_card(cc_type, cc_four, cc_exp)
 
-    return profile.pk
+    return customer
 
 
 @shared_task
@@ -59,7 +60,13 @@ def subscribe_customer(profile, package):
     #
     #       ... or maybe it's an InvalidRequestError. Check.
 
-    customer = stripe.Customer.retrieve(profile.stripe_id)
+    # If there's no customer, but the user is just signing up for a free plan,
+    # go ahead and create a customer.
+    if not profile.stripe_id and package.price == 0:
+        customer = create_customer(profile)
+    else:
+        customer = stripe.Customer.retrieve(profile.stripe_id)
+
     if profile.package is None:
         # Create a subscription for the customer
         customer.subscriptions.create(plan=package.stripe_id)
