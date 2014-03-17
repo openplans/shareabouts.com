@@ -723,6 +723,10 @@ a.logout-link {
 #cancel-set-credit-card {
   margin-left: 1em;
 }
+.payment-errors {
+  line-height: 2;
+  color: #D91616;
+}
 
 
 /* =Manager
