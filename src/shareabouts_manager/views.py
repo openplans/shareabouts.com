@@ -8,14 +8,14 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import resolve_url
 from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
-from django.views.generic import TemplateView, FormView
+from django.views.generic import TemplateView, FormView, View
 from sa_api_v2.models import DataSet
 from sa_api_v2.serializers import DataSetSerializer
 from shareabouts_manager.decorators import ssl_required
 from shareabouts_manager.forms import UserCreationForm
 from shareabouts_manager.mixins import ValidateInputMixin
 from shareabouts_manager.models import AccountPackage, UserProfile
-from shareabouts_manager.serializers import AccountPackageSerializer, UserProfileSerializer
+from shareabouts_manager.serializers import AccountPackageSerializer, UserProfileSerializer, CCInformationSerializer
 
 
 class LoginRequired (object):
@@ -167,6 +167,14 @@ class ProfileView (ManagerMixin, LoginRequired, SSLRequired, ValidateInputMixin,
         return context
 
 
+class SetCardInfoView (ManagerMixin, LoginRequired, SSLRequired, ValidateInputMixin, View):
+    validator_class = CCInformationSerializer
+
+    def on_valid(self, validator):
+        validator.save(self.request.user.profile)
+        return super(SetCardInfoView, self).on_valid(validator)
+
+
 class IndexView (ManagerMixin, SSLRequired, TemplateView):
     template_name = 'index.html'
 
@@ -186,3 +194,5 @@ password_reset_view = PasswordResetView.as_view()
 help_view = HelpView.as_view()
 robots_view = TemplateView.as_view(template_name='robots.txt', content_type='text/plain')
 sitemap_view = SiteMapView.as_view(content_type='text/xml')
+
+set_card_info_view = SetCardInfoView.as_view()

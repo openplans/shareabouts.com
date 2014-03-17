@@ -32,11 +32,9 @@
         {% endfor %}
       </p>  
 
-      <p>
-        {% if not profile.can_pay %}
-        Please enter payment information below to upgrade your plan.
-        {% endif %}
-      </p>     
+      {% if not profile.can_pay %}
+      <p>Please enter payment information below to upgrade your plan.</p>
+      {% endif %}
 
       <p><input type="submit" value="Update Account" class="btn btn-large" tabindex="4"></p>
     </form>
@@ -44,11 +42,41 @@
     <hr>
 
     <h3>Payment Method</h3>
-    {% if profile.credit_card %}
-    <p class="payment-method"><span class="card-number">**** **** **** {{ profile.credit_card.four }}</span> <span class="card-type">{{ profile.credit_card.type }}</span> <button id="set-credit-card" class="btn btn-small">Change</button></p>
-    {% else %}
-    <p class="payment-method"><button id="set-credit-card" class="btn btn-small">Add a Credit Card</button></p>
-    {% endif %}
+    
+    <form action="{% url 'manager-set-card-info' %}" method="POST" id="payment-form" class="is-hidden">
+      <span class="payment-errors"></span>
+
+      <p><input required type="text" size="20" id="credit-card-number" pattern="\d*" class="input-block" placeholder="Card Number"> <label for="credit-card-number" class="float-label"><strong>Card Number</strong></label></p>
+
+      <div class="widget-wrapper" style="float: left">
+        <div style="position: relative; display: inline-block;">
+          <input required type="text" size="4" id="credit-card-month" class="input-float" pattern="\d*" placeholder="MM"> <label for="credit-card-month" class="float-label"><strong>Month</strong></label>
+        </div>
+         / 
+        <div style="position: relative; display: inline-block;">
+          <input required type="text" size="4" id="credit-card-year" class="input-float" pattern="\d*" placeholder="YYYY"> <label for="credit-card-year" class="float-label"><strong>Year</strong></label>
+        </div>
+      </div>
+
+      <div class="widget-wrapper" style="float: right;">
+        <div style="position: relative; display: inline-block">
+          <input required type="text" size="4" id="credit-card-cvc" class="input-float" pattern="\d*" placeholder="CVC"> <label for="credit-card-cvc" class="float-label"><strong>CVC</strong></label>
+        </div>
+      </div>
+
+      <p class="credit-card-actions">
+        <button type="submit" class="btn btn-small">Save Card</button>
+        <a href="#" id="cancel-set-credit-card">Cancel</a>
+      </p>
+    </form>
+
+    <div id="current-payment-info">
+      {% if profile.credit_card %}
+      <p class="payment-method"><span class="card-number">**** **** **** {{ profile.credit_card.four }}</span> <span class="card-type">{{ profile.credit_card.type }}</span> <button id="set-credit-card" class="btn btn-small">Change</button></p>
+      {% else %}
+      <p class="payment-method"><button id="set-credit-card" class="btn btn-small">Add a Credit Card</button></p>
+      {% endif %}
+    </div>
 
   </div>
 </section>
@@ -56,29 +84,89 @@
 {% endblock %}
 
 {% block scripts %}
-  <script src="https://checkout.stripe.com/checkout.js"></script>
+  {% if debug %}
+  <script src="{{ STATIC_URL }}bower_components/jquery/jquery.js"></script>
 
-  <script>
-    var stripeHandler = StripeCheckout.configure({
-      key: '{{ settings.STRIPE_PUBLIC_KEY }}',
-      token: function(token, args) {
-        // Use the token to create the charge with a server-side script.
-        // You can access the token ID with `token.id`
-      }
-    });
-
-    document.getElementById('set-credit-card').addEventListener('click', function(e) {
-      stripeHandler.open({
-        name: 'Shareabouts',
-        description: '...',
-        amount: 2000
-      });
-      e.preventDefault();
-    });
-  </script>
+  <script src="{{ STATIC_URL }}bower_components/handlebars/handlebars.js"></script>
+  <script src="{{ STATIC_URL }}bower_components/underscore/underscore.js"></script>
+  <script src="{{ STATIC_URL }}bower_components/backbone/backbone.js"></script>
+  <script src="{{ STATIC_URL }}bower_components/backbone.marionette/lib/backbone.marionette.js"></script>
+  <script src="{{ STATIC_URL }}bower_components/backbone-relational/backbone-relational.js"></script>
+  <script src="{{ STATIC_URL }}bower_components/django-csrf.js/django-csrf.js"></script>
+  {% else %}
+  <script src="{{ STATIC_URL }}scripts/components.min.js?deployed_at={{ settings.LAST_DEPLOY_DATE|urlencode:'' }}"></script>
+  {% endif %}
 
   <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+
   <script>
     Stripe.setPublishableKey('{{ settings.STRIPE_PUBLIC_KEY }}');
+
+    $(function() {
+      $('#set-credit-card').on('click', function(evt) {
+        evt.preventDefault();
+
+        $('#payment-form').removeClass('is-hidden');
+        $('#current-payment-info').addClass('is-hidden');
+      });
+
+      $('#cancel-set-credit-card').on('click', function(evt) {
+        evt.preventDefault();
+        
+        $('#payment-form').addClass('is-hidden');
+        $('#current-payment-info').removeClass('is-hidden');
+      });
+
+      $('#payment-form').on('submit', function(evt) {
+        evt.preventDefault();
+
+        var number = $('#credit-card-number').val(),
+            cvc = $('#credit-card-cvc').val(),
+            exp_month = $('#credit-card-month').val(),
+            exp_year = $('#credit-card-year').val();
+
+        Stripe.card.createToken({
+          number: number,
+          cvc: cvc,
+          exp_month: exp_month,
+          // NOTE: This won't be a problem for about 80 years, but should be
+          // fixed at some point.
+          exp_year: (exp_year < 100 ? '20' + exp_year : exp_year)
+        }, stripeResponseHandler);
+      });
+    });
+
+    function stripeResponseHandler(status, response) {
+      if (response.error) {
+        // show the errors on the form
+        $(".payment-errors").text(response.error.message);
+        
+      } else {
+        var $form = $("#payment-form"),
+            $token, $type, $four, $exp;
+
+        // insert the token into the form so it gets submitted to the server
+        $token = $("<input type='hidden' name='stripe_token' value='" + response['id'] + "'/>").appendTo($form);
+        $type  = $("<input type='hidden' name='cc_type' value='" + response['card']['type'] + "'/>").appendTo($form);
+        $four  = $("<input type='hidden' name='cc_four' value='" + response['card']['last4'] + "'/>").appendTo($form);
+        $exp   = $("<input type='hidden' name='cc_exp' value='" + response['card']['exp_month'] + "/" + response['card']['exp_year'] + "'/>").appendTo($form);
+
+        // and submit
+        $.ajax({
+          url: $form.attr('action'),
+          type: $form.attr('method'),
+          dataType: 'json',
+          data: $form.serialize()
+        });
+        // $form.get(0).submit();
+        // console.log(response)
+
+        // remove the hidden inputs, in case we submit the form again.
+        $token.remove();
+        $type.remove();
+        $four.remove();
+        $exp.remove();
+      }
+    }
   </script>
 {% endblock %}
