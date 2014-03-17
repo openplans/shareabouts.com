@@ -34,12 +34,12 @@ class CCInformationSerializer (serializers.Serializer):
             # If there is already a customer ID, then we just have to update
             save_cc = (update_customer.s(profile.pk, stripe_token) |
                        add_user_credit_card.s(cc_type, cc_four, cc_exp))
-        self.task_id = save_cc().id
+        self.task = save_cc()
 
     def to_native(self, obj):
         return {
             'status': 'pending',
-            'task': self.task_id,
+            'task': self.task.id,
         }
 
 

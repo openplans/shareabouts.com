@@ -140,7 +140,7 @@
       if (response.error) {
         // show the errors on the form
         $(".payment-errors").text(response.error.message);
-        
+
       } else {
         var $form = $("#payment-form"),
             $token, $type, $four, $exp;
@@ -157,9 +157,14 @@
           type: $form.attr('method'),
           dataType: 'json',
           data: $form.serialize()
+
+          // TODO: Handle potential validation errors? Everything should be
+          //       pretty safe by this point because we've already gotten a
+          //       cc token back from stripe. However, any errors could occur
+          //       (like, our server could be down), so we'll have to handle
+          //       them gracefully, at least letting the user know that they
+          //       should try again later.
         });
-        // $form.get(0).submit();
-        // console.log(response)
 
         // remove the hidden inputs, in case we submit the form again.
         $token.remove();

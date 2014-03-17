@@ -3,6 +3,7 @@ from datetime import datetime
 from django.conf import settings
 from shareabouts_manager.models import CreditCard, UserProfile
 import stripe
+import time
 
 
 @shared_task
@@ -15,7 +16,12 @@ def create_customer(profile, cc_token):
 
     # Create the Stripe customer and set the resulting customer ID on the
     # profile model object
-    customer = stripe.Customer.create(card=cc_token)
+    try:
+        customer = stripe.Customer.create(card=cc_token)
+    except stripe.StripeError as e:
+        # TODO: If we pass up an invalid CC token some how, we'll cause an
+        #       exception. Catch and set the status on the task appropriately
+        pass
     profile.stripe_id = customer.id
     profile.save()
 
@@ -32,9 +38,14 @@ def update_customer(profile, cc_token):
 
     # Retrieve the customer corresponding to the profile from Stripe and set
     # a new credit card.
-    customer = stripe.Customer.retrieve(profile.stripe_id)
-    customer.card = cc_token
-    customer.save()
+    try:
+        customer = stripe.Customer.retrieve(profile.stripe_id)
+        customer.card = cc_token
+        customer.save()
+    except stripe.StripeError as e:
+        # TODO: If we pass up an invalid CC token some how, we'll cause an
+        #       exception. Catch and set the status on the task appropriately
+        pass
 
     return profile.pk
 
