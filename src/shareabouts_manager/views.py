@@ -180,6 +180,13 @@ class TaskStatusView (SSLRequired, JSONResponseMixin, View):
         from celery.result import AsyncResult
         result = AsyncResult(task_id)
 
+        if result.state.startswith('FAIL'):
+            # Could be "No such customer: ...", which would mean our customer
+            # records have gotten out of sync with Stripe. Should we just get
+            # rid of their stripe_id and recreate them, or let the user know
+            # something went wrong and we're working on it?
+            pass
+
         return self.render_to_json_response({
             'status': result.state.lower(),
             'task': task_id

@@ -7,7 +7,7 @@ import time
 
 
 @shared_task
-def create_customer(profile, cc_token):
+def create_customer(profile, cc_token, cc_type, cc_four, cc_exp):
     if isinstance(profile, (int, basestring)):
         profile = UserProfile.objects.get(pk=profile)
 
@@ -16,20 +16,17 @@ def create_customer(profile, cc_token):
 
     # Create the Stripe customer and set the resulting customer ID on the
     # profile model object
-    try:
-        customer = stripe.Customer.create(card=cc_token)
-    except stripe.StripeError as e:
-        # TODO: If we pass up an invalid CC token some how, we'll cause an
-        #       exception. Catch and set the status on the task appropriately
-        pass
+    customer = stripe.Customer.create(card=cc_token)
     profile.stripe_id = customer.id
     profile.save()
+
+    add_user_credit_card(cc_type, cc_four, cc_exp)
 
     return profile.pk
 
 
 @shared_task
-def update_customer(profile, cc_token):
+def update_customer(profile, cc_token, cc_type, cc_four, cc_exp):
     if isinstance(profile, (int, basestring)):
         profile = UserProfile.objects.get(pk=profile)
 
@@ -38,14 +35,11 @@ def update_customer(profile, cc_token):
 
     # Retrieve the customer corresponding to the profile from Stripe and set
     # a new credit card.
-    try:
-        customer = stripe.Customer.retrieve(profile.stripe_id)
-        customer.card = cc_token
-        customer.save()
-    except stripe.StripeError as e:
-        # TODO: If we pass up an invalid CC token some how, we'll cause an
-        #       exception. Catch and set the status on the task appropriately
-        pass
+    customer = stripe.Customer.retrieve(profile.stripe_id)
+    customer.card = cc_token
+    customer.save()
+
+    add_user_credit_card(cc_type, cc_four, cc_exp)
 
     return profile.pk
 

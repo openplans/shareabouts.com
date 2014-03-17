@@ -28,13 +28,11 @@ class CCInformationSerializer (serializers.Serializer):
         if not profile.stripe_id:
             # If there is no customer ID, then schedule one to be created, and
             # then add the credit card once that's done.
-            save_cc = (create_customer.s(profile.pk, stripe_token) |
-                       add_user_credit_card.s(cc_type, cc_four, cc_exp))
+            save_cc = create_customer.delay
         else:
             # If there is already a customer ID, then we just have to update
-            save_cc = (update_customer.s(profile.pk, stripe_token) |
-                       add_user_credit_card.s(cc_type, cc_four, cc_exp))
-        self.task = save_cc()
+            save_cc = update_customer.delay
+        self.task = save_cc(profile.pk, stripe_token, cc_type, cc_four, cc_exp)
 
     def to_native(self, obj):
         return {
