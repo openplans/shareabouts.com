@@ -67,7 +67,17 @@ class UserProfile (_TimeStampedModel):
         return self.fullname
 
     def can_pay(self):
-        return self.stripe_id not in (None, '')
+        # Do they have a Stripe customer id?
+        if self.stripe_id in (None, ''):
+            return False
+
+        # Do they have a credit card on file?
+        try:
+            self.credit_card
+        except CreditCard.DoesNotExist:
+            return False
+
+        return True
 
     @property
     def credit_card(self):
