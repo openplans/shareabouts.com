@@ -260,11 +260,6 @@ textarea {
   margin-bottom: 1.25em;
 }
 
-.credit-card-actions {
-  clear: both;
-
-}
-
 .radio-btn + label {
   color: #fff;
   background: #aaa;
@@ -709,7 +704,7 @@ a.logout-link {
 }
 
 
-/* =Manager
+/* =Payment Method, Credit Card, Stripe
 -------------------------------------------------------------- */
 
 .payment-method {}
@@ -726,6 +721,21 @@ a.logout-link {
 .payment-errors {
   line-height: 2;
   color: #D91616;
+}
+
+.credit-card-actions {
+  clear: both;
+}
+.credit-card-save-status {
+  float: right;
+  position: relative;
+  padding-left: 20px;
+  font-weight: 800;
+}
+.spinner {
+  position: absolute;
+  top: 50%;
+  right: 100%;
 }
 
 
@@ -894,12 +904,6 @@ a.logout-link {
   top: 0.375em;
 }
 .modal-body {
-}
-
-/* =Profile
--------------------------------------------------------------- */
-.credit-card-save-status {
-  float: right;
 }
 
 
