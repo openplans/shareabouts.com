@@ -71,7 +71,8 @@
   <script>
     var Shareabouts = Shareabouts || {};
     Shareabouts.Data = {
-      datasets: {{ datasets|as_json }},
+      datasets: {{ datasets_data|as_json }},
+      profile: {{ profile_data|as_json }},
       {% comment %} set in the dataset view, used in models.js {% endcomment %}
       username: '{{ username }}'
     };

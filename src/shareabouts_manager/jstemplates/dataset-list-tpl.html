@@ -3,7 +3,7 @@
         <div class="account-info">
           <a href="/profile" class="change-plan-link">Change My Plan</a>
           <h5 class="account-type">Basic Plan</h5>
-          <div class="progress-bar"><div class="progress nobreak progress-alert" style="width: 92%;">92 of 100 places</div></div>
+          <div class="progress-bar"><div class="progress nobreak progress-alert" style="width: {{percent_of max_places num_places }}%;">{{ num_places }} of {{ first_of max_places 'Unlimited' }} places</div></div>
         </div>
         <h2 class="manager-page-title">My Datasets</h2> <a href='#' class="btn btn-small new-dataset-link">New Dataset</a>
       </header>

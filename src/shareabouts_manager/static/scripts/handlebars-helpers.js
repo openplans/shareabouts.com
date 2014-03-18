@@ -17,6 +17,20 @@ var Shareabouts = Shareabouts || {};
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   });
 
+  Handlebars.registerHelper('percent_of', function(whole, part) {
+    if (whole) {
+      return Math.min(Math.max(part * 100 / whole, 0), 100);
+    } else {
+      return 0;
+    }
+  });
+
+  Handlebars.registerHelper('first_of', function() {
+    for (var i = 0; i < arguments.length; ++i) {
+      if (arguments[i]) { return arguments[i]; }
+    }
+  });
+
 
   Handlebars.registerHelper('select', function(value, options) {
     var $el = $('<div/>').html(options.fn(this)),

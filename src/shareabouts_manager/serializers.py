@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
+from sa_api_v2.models import Place
 from shareabouts_manager.models import AccountPackage, UserProfile
 from shareabouts_manager.tasks import create_customer, update_customer, subscribe_customer
 
@@ -82,3 +83,16 @@ class UserProfileSerializer (serializers.ModelSerializer):
     def save(self, **kwargs):
         subscribe_customer(self.profile, self.data['package'])
         return super(UserProfileSerializer, self).save(**kwargs)
+
+    def to_native(self, obj):
+        data = super(UserProfileSerializer, self).to_native(obj)
+
+        places_count = Place.objects.filter(dataset__owner=self.profile.auth).count()
+        max_places = self.profile.get_overrides().max_places or self.profile.package.max_places
+
+        data.update({
+            'num_places': places_count,
+            'max_places': max_places if max_places and max_places >= 0 else None,
+        })
+
+        return data

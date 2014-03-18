@@ -5,6 +5,8 @@ var Shareabouts = Shareabouts || {};
 (function(NS) {
   'use strict';
 
+  NS.ProfileModel = Backbone.Model.extend({});
+  
   NS.DataSetModel = Backbone.Model.extend({
     initialize: function() {
       // Slug is used in the api, but it also editable. Cache it for the url

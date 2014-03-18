@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+from __future__ import unicode_literals, division
 
 from celery.result import AsyncResult
 from django.conf import settings
@@ -147,8 +147,14 @@ class DataSetsView (ManagerMixin, ProfileRequired, SSLRequired, TemplateView):
             datasets_serializer.context = {'request': self.request, 'view': self}
             datasets_data = datasets_serializer.data
 
-            context['datasets'] = datasets_data
+            # Add the current profile to the context
+            profile = self.get_profile();
+            profile_serializer = UserProfileSerializer(profile)
+            profile_data = profile_serializer.data
+
             context['username'] = owner.username
+            context['datasets_data'] = datasets_data
+            context['profile_data'] = profile_data
 
         return context
 

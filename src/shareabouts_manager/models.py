@@ -66,6 +66,12 @@ class UserProfile (_TimeStampedModel):
     def __str__(self):
         return self.fullname
 
+    def get_overrides(self):
+        try:
+            return self.overrides
+        except AccountOverrides.DoesNotExist:
+            return AccountOverrides(profile=self)
+
     def can_pay(self):
         # Do they have a Stripe customer id?
         if self.stripe_id in (None, ''):

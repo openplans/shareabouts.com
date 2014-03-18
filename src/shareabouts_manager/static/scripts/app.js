@@ -14,10 +14,12 @@ var Shareabouts = Shareabouts || {};
   });
 
   NS.app.addInitializer(function(options){
-    var datasetsCollection = new NS.DataSetCollection(NS.Data.datasets);
+    var datasetsCollection = new NS.DataSetCollection(NS.Data.datasets),
+        profileModel = new NS.ProfileModel(NS.Data.profile);
 
     NS.app.mainRegion.show(new NS.DataSetListView({
-      collection: datasetsCollection
+      collection: datasetsCollection,
+      model: profileModel
     }));
   });
 
