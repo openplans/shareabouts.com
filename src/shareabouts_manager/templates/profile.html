@@ -166,7 +166,7 @@
           if (resp.status === 'success') {
             success();
           } else if (resp.status === 'failure') {
-            error();
+            error(resp.details);
           } else {
             retry();
           }
@@ -247,6 +247,7 @@
         onCreditCardError(response.error.message);
       } else {
         var $form = $("#payment-form"),
+            defaultError = 'We were unable to set your credit card information. Please try again.',
             $token, $type, $four, $exp;
 
         // insert the token into the form so it gets submitted to the server
@@ -269,7 +270,7 @@
           //       them gracefully, at least letting the user know that they
           //       should try again later.
           error: function(resp) {
-            onCreditCardError('We were unable to set your credit card information. Please try again.');
+            onCreditCardError(defaultError);
           },
           success: function(resp) {
             if (resp.status === 'success') {
@@ -277,8 +278,8 @@
             } else {
               checkTaskStatus(resp.task, 20, function() {
                 onCreditCardUpdate(stripeToken);
-              }, function() {
-                onCreditCardError('We were unable to set your credit card information. Please try again.');
+              }, function(errorMsg) {
+                onCreditCardError(errorMsg || defaultError);
               });
             }
           }
