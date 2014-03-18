@@ -4,7 +4,7 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils.translation import ugettext as _
 
-from shareabouts_manager.models import UserAuth, UserProfile, AccountOverrides
+from shareabouts_manager.models import UserAuth, UserProfile, AccountOverrides, AccountPackage
 
 
 class UserCreationForm(forms.ModelForm):
@@ -72,6 +72,10 @@ class UserCreationForm(forms.ModelForm):
             auth.profile = UserProfile(package=None)
             auth.profile.email = self.cleaned_data["email"]
             auth.profile.affiliation = self.cleaned_data["affiliation"]
+
+            default_package = AccountPackage.objects.get(is_default=True)
+            auth.profile.package = default_package
+
             auth.profile.save()
 
             AccountOverrides.objects.create(profile=auth.profile)
