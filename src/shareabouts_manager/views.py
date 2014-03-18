@@ -3,10 +3,9 @@ from __future__ import unicode_literals, division
 from celery.result import AsyncResult
 from django.conf import settings
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import redirect_to_login
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
 from django.shortcuts import resolve_url, redirect
 from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
@@ -20,18 +19,12 @@ from shareabouts_manager.models import AccountPackage, UserProfile
 from shareabouts_manager.serializers import AccountPackageSerializer, UserProfileSerializer, CCInformationSerializer, AsyncTaskSerializer
 
 
-class LoginRequired (object):
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super(LoginRequired, self).dispatch(request, *args, **kwargs)
-
-
-class ProfileRequired (LoginRequired):
+class ProfileRequired (object):
     def dispatch(self, request, *args, **kwargs):
         if self.get_profile() is None:
-            return HttpResponseRedirect(reverse('manager-signin'))
-        else:
-            return super(ProfileRequired, self).dispatch(request, *args, **kwargs)
+            path = request.get_full_path()
+            return redirect_to_login(path)
+        return super(ProfileRequired, self).dispatch(request, *args, **kwargs)
 
 
 class SSLRequired (object):
