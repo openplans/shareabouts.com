@@ -5,6 +5,8 @@ from shareabouts_manager.models import UserProfile, AccountOverrides, AccountPac
 
 class AccountPackageAdmin (admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
+    list_display = ('__str__', 'is_default')
+    list_editable = ('is_default',)
 
 
 class PackageOverridesInline (admin.StackedInline):

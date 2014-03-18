@@ -40,6 +40,7 @@ class AccountPackage (_TimeStampedModel, _BaseAccountProperties):
     description = models.TextField(blank=True)
     price = models.DecimalField(decimal_places=0, max_digits=10)
     stripe_id = models.CharField(max_length=50, blank=True)
+    is_default = models.BooleanField()
 
     def __str__(self):
         return self.name
