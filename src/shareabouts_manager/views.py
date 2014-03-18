@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import resolve_url
 from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
@@ -23,6 +24,15 @@ class LoginRequired (object):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super(LoginRequired, self).dispatch(request, *args, **kwargs)
+
+
+class ProfileRequired (LoginRequired):
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            self.request.user.profile
+        except UserProfile.DoesNotExist:
+            return HttpResponseRedirect(reverse('manager-signin'))
+        return super(ProfileRequired, self).dispatch(request, *args, **kwargs)
 
 
 class SSLRequired (object):
@@ -119,7 +129,7 @@ class SigninView (ManagerMixin, SSLRequired, FormView):
         return super(SigninView, self).form_valid(form)
 
 
-class DataSetsView (ManagerMixin, LoginRequired, SSLRequired, TemplateView):
+class DataSetsView (ManagerMixin, ProfileRequired, SSLRequired, TemplateView):
     template_name = 'datasets.html'
 
     def get_datasets_queryset(self, owner):
@@ -143,7 +153,7 @@ class DataSetsView (ManagerMixin, LoginRequired, SSLRequired, TemplateView):
         return context
 
 
-class ProfileView (ManagerMixin, LoginRequired, SSLRequired, ValidateInputMixin, TemplateView):
+class ProfileView (ManagerMixin, ProfileRequired, SSLRequired, ValidateInputMixin, TemplateView):
     template_name = 'profile.html'
     validator_class = UserProfileSerializer
 
@@ -168,7 +178,7 @@ class ProfileView (ManagerMixin, LoginRequired, SSLRequired, ValidateInputMixin,
         return context
 
 
-class SetCardInfoView (ManagerMixin, LoginRequired, SSLRequired, ValidateInputMixin, View):
+class SetCardInfoView (ManagerMixin, ProfileRequired, SSLRequired, ValidateInputMixin, View):
     validator_class = CCInformationSerializer
 
     def on_valid(self, validator):
