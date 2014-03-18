@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import resolve_url
+from django.shortcuts import resolve_url, redirect
 from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
 from django.views.generic import TemplateView, FormView, View
@@ -202,6 +202,12 @@ class TaskStatusView (SSLRequired, JSONResponseMixin, View):
 
 class IndexView (ManagerMixin, SSLRequired, TemplateView):
     template_name = 'index.html'
+
+    def get(self, request):
+        if self.get_profile() is not None:
+            return redirect('manager-datasets')
+
+        return super(IndexView, self).get(request)
 
 
 # SEO
