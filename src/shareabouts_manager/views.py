@@ -28,12 +28,10 @@ class LoginRequired (object):
 
 class ProfileRequired (LoginRequired):
     def dispatch(self, request, *args, **kwargs):
-        if self.request.user.is_authenticated():
-            try:
-                self.request.user.profile
-            except UserProfile.DoesNotExist:
-                return HttpResponseRedirect(reverse('manager-signin'))
-        return super(ProfileRequired, self).dispatch(request, *args, **kwargs)
+        if self.get_profile() is None:
+            return HttpResponseRedirect(reverse('manager-signin'))
+        else:
+            return super(ProfileRequired, self).dispatch(request, *args, **kwargs)
 
 
 class SSLRequired (object):
